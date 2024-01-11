@@ -87,3 +87,10 @@ for fits_filename in fits_filenames:
     plt.ylim(0,500)
     plt.title('Histogram for Thresholded Image (Iterative)')
     plt.ylabel('Frequency')
+
+    plt.subplot(2, 2, 3)
+    hist_thresholded_otsu = cv2.calcHist([thresholded_img_otsu], [0], None, [256], [0, 256])
+    plt.plot(hist_thresholded_otsu, color='green')
+    plt.ylim(0,500)
+    plt.title('Histogram for Thresholded Image (Otsu)')
+    plt.ylabel('Frequency')
