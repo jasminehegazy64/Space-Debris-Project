@@ -9,4 +9,5 @@ from PIL import Image
 import os
 from scipy.optimize import curve_fit
 #from google.colab import drive
-import Convert_debris.py
+import Convert_debris
+import threshold
