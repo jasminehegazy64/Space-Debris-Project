@@ -28,3 +28,47 @@ bin_edges = None
 all_amplitudes = []
 all_means = []
 all_stddevs = []
+
+
+for fits_filename in fits_filenames:
+    # Full path to the FITS file
+    full_path_fits = os.path.join(fits_directory, fits_filename)
+
+    # Output PNG filename (assuming the same name with a different extension)
+    output_image_filename = os.path.join(output_directory, os.path.splitext(fits_filename)[0] + '_preprocessed.png')
+
+    # Convert FITS to PNG with preprocessing
+    convert_fits_to_image(full_path_fits, output_image_filename)
+
+    # Read the PNG image
+    image = cv2.imread(output_image_filename)
+    img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Plot histogram for original image
+    hist_original, bin_edges = np.histogram(img.flatten(), bins=256, range=[0, 256])
+
+    # Fit a Gaussian curve to the histogram
+    p0 = [1.0, np.mean(img), np.std(img)]
+    params, _ = curve_fit(gaussian_curve, bin_edges[:-1], hist_original, p0=p0)
+
+     # Append parameters to arrays
+    all_amplitudes.append(params[0])
+    all_means.append(params[1])
+    all_stddevs.append(params[2])
+
+    # Apply the iterative thresholding algorithm to the image
+    optimal_threshold = iterative_thresholding(img)
+
+    # Threshold the image using the optimal threshold
+    thresholded_img = (img >= optimal_threshold).astype(np.uint8) * 255
+
+    # Apply Otsu's thresholding to the image
+    thresholded_img_otsu, optimal_threshold_otsu = otsu_thresholding(img)
+
+    # Print the results for the iterative method
+    print(f"\nResults for Thresholding (FITS file: {fits_filename}):")
+    print(f"The optimal threshold determined by the iterative algorithm: {optimal_threshold}")
+    print(f"The optimal threshold determined by Otsu's method: {optimal_threshold_otsu}")
+
+    # Display the original, thresholded (Iterative), and thresholded (Otsu) images for comparison
+    cv2_imshow(np.hstack([img, thresholded_img, thresholded_img_otsu]))
