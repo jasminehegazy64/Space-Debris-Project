@@ -16,7 +16,7 @@ import threshold
 fits_directory = 'C:\Users\USER\Desktop\Space-Debris-Project\dataset'
 
 # Output directory for PNG images
-output_directory = '/content/drive/MyDrive/Colab-Debris/output_images/'
+output_directory = 'C:\Users\USER\Desktop\Space-Debris-Project\dataset\output_files'
 
 # List of FITS filenames
 fits_filenames = ['space5.fits','tria.fits','please4.fits','space8.fits','space6.fits','space3.fits']  # Add more filenames as needed
