@@ -138,7 +138,7 @@ for fits_filename in fits_filenames:
 
         # Apply Shi-Tomasi corner detection to the current component ROI
         corners = cv2.goodFeaturesToTrack(thresholded_img * component_mask, maxCorners=100, qualityLevel=0.01, minDistance=0.1)
-        
+
         num_corners = corners.shape[0] if corners is not None else 0
 
         # Connected components labeling for thresholded image (Iterative method) because the iterative method gets better results
@@ -171,4 +171,16 @@ for fits_filename in fits_filenames:
         num_corners = corners.shape[0] if corners is not None else 0
 
         print(f"Component {label} (Iterative): Area = {area_iterative}, Center = ({center_x}, {center_y}), Edge count = {edge_count}, Number of Corners = {num_corners}")
-        # print(f"Component {label} (Iterative): Area = {area_iterative} Edge count = {edge_count} Number of Corners = {num_corners}")
+
+    # Print the number of white objects (excluding the background) for the iterative method
+    num_white_objects_iterative = num_labels_iterative - 1  # Subtract 1 for the background
+    print(f'The number of white objects (Iterative) is: {num_white_objects_iterative}')
+
+    #COORDINATES OF THE COMPONENTS
+    num_labels_iterative, labels_iterative, stats_iterative, centroids_iterative = cv2.connectedComponentsWithStats(thresholded_img, connectivity=8)
+    object_id = 1
+    # Iterate through each detected object
+    for i in range(1, num_labels_iterative):
+    # Get the coordinates of the bounding box for the current object
+        x, y, w, h, area = stats_iterative[i]
+        
