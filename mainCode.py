@@ -80,3 +80,10 @@ for fits_filename in fits_filenames:
     plt.plot(hist_original, color='blue')
     plt.title('Histogram for Original Image')
     plt.ylabel('Frequency')
+
+    plt.subplot(2, 2, 2)
+    hist_thresholded = cv2.calcHist([thresholded_img], [0], None, [256], [0, 256])
+    plt.plot(hist_thresholded, color='black')
+    plt.ylim(0,500)
+    plt.title('Histogram for Thresholded Image (Iterative)')
+    plt.ylabel('Frequency')
