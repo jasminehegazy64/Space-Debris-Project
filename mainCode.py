@@ -11,6 +11,7 @@ from scipy.optimize import curve_fit
 #from google.colab import drive
 from Convert_debris import convert_fits_to_image
 from threshold import iterative_thresholding, otsu_thresholding
+from gaussian_curve import gaussian_curve
 
 # Directory containing FITS files
 fits_directory = 'C:\Users\USER\Desktop\Space-Debris-Project\dataset'
@@ -71,7 +72,7 @@ for fits_filename in fits_filenames:
     print(f"The optimal threshold determined by Otsu's method: {optimal_threshold_otsu}")
 
     # Display the original, thresholded (Iterative), and thresholded (Otsu) images for comparison
-    cv2_imshow(np.hstack([img, thresholded_img, thresholded_img_otsu]))
+    cv2.imshow(np.hstack([img, thresholded_img, thresholded_img_otsu]))
 
      # Plot histograms
     plt.figure(figsize=(12, 6))
@@ -117,7 +118,7 @@ for fits_filename in fits_filenames:
     colored_image_iterative = colors_iterative[labels_iterative]
 
     # Display the result
-    cv2_imshow(colored_image_iterative)
+    cv2.imshow(colored_image_iterative)
 
     # Edge detection using the Canny edge detector
     edges = cv2.Canny(thresholded_img, 30, 100)
