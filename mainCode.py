@@ -179,8 +179,24 @@ for fits_filename in fits_filenames:
     #COORDINATES OF THE COMPONENTS
     num_labels_iterative, labels_iterative, stats_iterative, centroids_iterative = cv2.connectedComponentsWithStats(thresholded_img, connectivity=8)
     object_id = 1
+    
     # Iterate through each detected object
     for i in range(1, num_labels_iterative):
     # Get the coordinates of the bounding box for the current object
         x, y, w, h, area = stats_iterative[i]
+
+    # Draw the bounding box on the original image
+        cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+    # Print the coordinates of the bounding box
+        print(f"Object {i}: X={x}, Y={y}, Width={w}, Height={h}")
+
+        cv2.putText(image, str(object_id), (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+        #Increment Id
+        object_id += 1
+
+    # Display the result
+    cv2_imshow(image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
         
