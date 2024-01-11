@@ -200,4 +200,17 @@ for fits_filename in fits_filenames:
     cv2.imshow(image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+    
+    
+# Display the Gaussian curves for all FITS files
+plt.figure(figsize=(10, 6))
+for i, fits_filename in enumerate(fits_filenames):
+    plt.plot(bin_edges[:-1], gaussian_curve(bin_edges[:-1], all_amplitudes[i], all_means[i], all_stddevs[i]),
+             label=f'{fits_filename} Gaussian Curve')
+
+plt.legend()
+plt.title('Gaussian Curves for FITS Files')
+plt.xlabel('Pixel Intensity')
+plt.ylabel('Frequency')
+plt.show()    
         
