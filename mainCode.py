@@ -124,3 +124,25 @@ for fits_filename in fits_filenames:
 
     # Save the processed images (Iterative method)
     cv2.imwrite(os.path.join(output_directory, f'processed_{fits_filename}_iterative.png'), colored_image_iterative)
+
+    # Print the area of each component (Iterative method)
+    for label in range(1, num_labels_iterative):  # Skip label 0 as it corresponds to the background
+        area_iterative = stats_iterative[label, cv2.CC_STAT_AREA]
+        component_mask = (labels_iterative == label).astype(np.uint8)
+
+        # Multiply the component mask with the edges to get edges within the component
+        edges_in_component = cv2.bitwise_and(edges, edges, mask=component_mask)
+
+        # Count the number of edges in the component
+        edge_count = np.count_nonzero(edges_in_component)
+
+        # Apply Shi-Tomasi corner detection to the current component ROI
+        corners = cv2.goodFeaturesToTrack(thresholded_img * component_mask, maxCorners=100, qualityLevel=0.01, minDistance=0.1)
+        
+        num_corners = corners.shape[0] if corners is not None else 0
+
+        # Connected components labeling for thresholded image (Iterative method) because the iterative method gets better results
+    num_labels_iterative, labels_iterative, stats_iterative, centroids_iterative = cv2.connectedComponentsWithStats(thresholded_img, connectivity=8)
+
+    # Create a random color map for visualization
+    colors_iterative = np.random.randint(0, 255, size=(num_labels_iterative, 3), dtype=np.uint8)
