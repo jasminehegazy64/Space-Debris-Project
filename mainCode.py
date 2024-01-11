@@ -152,7 +152,7 @@ for fits_filename in fits_filenames:
     colored_image_iterative = colors_iterative[labels_iterative]
 
     # Display the result
-    cv2_imshow(colored_image_iterative)
+    cv2.imshow(colored_image_iterative)
 
     # Print the centers of each component (Iterative method)
     for label in range(1, num_labels_iterative):  # Skip label 0 as it corresponds to the background
@@ -197,7 +197,7 @@ for fits_filename in fits_filenames:
         object_id += 1
 
     # Display the result
-    cv2_imshow(image)
+    cv2.imshow(image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
         
