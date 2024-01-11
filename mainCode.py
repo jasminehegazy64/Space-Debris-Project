@@ -106,3 +106,21 @@ for fits_filename in fits_filenames:
 
     plt.tight_layout()
     plt.show()
+
+    # Connected components labeling for thresholded image (Iterative method) becuase the iterative method gets better results
+    num_labels_iterative, labels_iterative, stats_iterative, centroids_iterative = cv2.connectedComponentsWithStats(thresholded_img, connectivity=8)
+
+    # Create a random color map for visualization
+    colors_iterative = np.random.randint(0, 255, size=(num_labels_iterative, 3), dtype=np.uint8)
+
+    # Create a colored image based on the labels
+    colored_image_iterative = colors_iterative[labels_iterative]
+
+    # Display the result
+    cv2_imshow(colored_image_iterative)
+
+    # Edge detection using the Canny edge detector
+    edges = cv2.Canny(thresholded_img, 30, 100)
+
+    # Save the processed images (Iterative method)
+    cv2.imwrite(os.path.join(output_directory, f'processed_{fits_filename}_iterative.png'), colored_image_iterative)
