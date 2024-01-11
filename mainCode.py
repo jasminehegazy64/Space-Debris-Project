@@ -146,3 +146,29 @@ for fits_filename in fits_filenames:
 
     # Create a random color map for visualization
     colors_iterative = np.random.randint(0, 255, size=(num_labels_iterative, 3), dtype=np.uint8)
+
+     # Create a colored image based on the labels
+    colored_image_iterative = colors_iterative[labels_iterative]
+
+    # Display the result
+    cv2_imshow(colored_image_iterative)
+
+    # Print the centers of each component (Iterative method)
+    for label in range(1, num_labels_iterative):  # Skip label 0 as it corresponds to the background
+        area_iterative = stats_iterative[label, cv2.CC_STAT_AREA]
+        center_x, center_y = centroids_iterative[label]
+        component_mask = (labels_iterative == label).astype(np.uint8)
+
+        # Multiply the component mask with the edges to get edges within the component
+        edges_in_component = cv2.bitwise_and(edges, edges, mask=component_mask)
+
+        # Count the number of edges in the component
+        edge_count = np.count_nonzero(edges_in_component)
+
+        # Apply Shi-Tomasi corner detection to the current component ROI
+        corners = cv2.goodFeaturesToTrack(thresholded_img * component_mask, maxCorners=100, qualityLevel=0.01, minDistance=0.1)
+
+        num_corners = corners.shape[0] if corners is not None else 0
+
+        print(f"Component {label} (Iterative): Area = {area_iterative}, Center = ({center_x}, {center_y}), Edge count = {edge_count}, Number of Corners = {num_corners}")
+        # print(f"Component {label} (Iterative): Area = {area_iterative} Edge count = {edge_count} Number of Corners = {num_corners}")
