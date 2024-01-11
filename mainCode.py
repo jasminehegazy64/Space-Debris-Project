@@ -72,3 +72,11 @@ for fits_filename in fits_filenames:
 
     # Display the original, thresholded (Iterative), and thresholded (Otsu) images for comparison
     cv2_imshow(np.hstack([img, thresholded_img, thresholded_img_otsu]))
+
+     # Plot histograms
+    plt.figure(figsize=(12, 6))
+
+    plt.subplot(2, 2, 1)
+    plt.plot(hist_original, color='blue')
+    plt.title('Histogram for Original Image')
+    plt.ylabel('Frequency')
