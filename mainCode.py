@@ -214,3 +214,60 @@ plt.xlabel('Pixel Intensity')
 plt.ylabel('Frequency')
 plt.show()    
         
+        
+# Iterate over FITS files and extract header information
+for fits_filename in fits_filenames:
+    # Full path to the FITS file
+    full_path_fits = os.path.join(fits_directory, fits_filename)
+
+    # Open the FITS file
+    with fits.open(full_path_fits) as hdul:
+        # Access the header of the primary HDU
+        header = hdul[0].header
+
+        # Extract relevant information
+        try:
+            # Extracting Field of View (FOV) from the header
+            fov = header['TFIELDS']
+        except KeyError:
+            fov = "Not available"
+
+        try:
+            # Extracting the number of axis
+            naxis = header['NAXIS']
+        except KeyError:
+            naxis = "Not available"
+
+        try:
+            # Extracting the number of axis
+            wavelen = header['WAVELENG']
+        except KeyError:
+            wavelen = "Not available"
+
+        try:
+            # Extracting Pixel Scale from the header
+            pixel_scale = header['BITPIX']
+        except KeyError:
+            pixel_scale = "Not available"
+
+        try:
+            # Extracting Calibration Data (filter) from the header
+            filter_used = header['FILTER']
+        except KeyError:
+            filter_used = "Not available"
+
+        try:
+            # Extracting Calibration Data ( exposure time ) from the header
+            exposure_time = header['EXPOSURE']
+        except KeyError:
+            exposure_time = "Not available"
+
+        # Print the information
+        print(f"FITS File: {fits_filename}")
+        print(f"Number of Axis: {naxis}")
+        print(f"Wave Length: {wavelen}")
+        print(f"Field of View (FOV): {fov}")
+        print(f"Pixel Scale: {pixel_scale}")
+        print(f"Exposure Time: {exposure_time}")
+        print(f"Filter Used: {filter_used}")
+        print("-" * 50)
