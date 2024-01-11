@@ -94,3 +94,15 @@ for fits_filename in fits_filenames:
     plt.ylim(0,500)
     plt.title('Histogram for Thresholded Image (Otsu)')
     plt.ylabel('Frequency')
+
+    plt.subplot(2, 2, 4)
+    plt.plot(bin_edges[:-1], hist_original, label='Histogram', color='blue')
+    plt.plot(bin_edges[:-1], gaussian_curve(bin_edges[:-1], *params), label='Gaussian Curve', linestyle='--', color='red')
+    plt.legend()
+    plt.title(f'Histogram with Gaussian Curve for {fits_filename}')
+    plt.ylabel('Frequency')
+    plt.show()
+
+
+    plt.tight_layout()
+    plt.show()
