@@ -9,8 +9,8 @@ from PIL import Image
 import os
 from scipy.optimize import curve_fit
 #from google.colab import drive
-import Convert_debris
-import threshold
+from Convert_debris import convert_fits_to_image
+from threshold import iterative_thresholding, otsu_thresholding
 
 # Directory containing FITS files
 fits_directory = 'C:\Users\USER\Desktop\Space-Debris-Project\dataset'
