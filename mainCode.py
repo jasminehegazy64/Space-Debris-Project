@@ -7,6 +7,7 @@ import cv2
 from PIL import Image
 #from google.colab.patches import cv2_imshow
 import os
+import numpy as np
 from scipy.optimize import curve_fit
 #from google.colab import drive
 from Convert_debris import convert_fits_to_image
@@ -14,10 +15,10 @@ from threshold import iterative_thresholding, otsu_thresholding
 from gaussian_curve import gaussian_curve
 
 # Directory containing FITS files
-fits_directory = 'C:\Users\USER\Desktop\Space-Debris-Project\dataset'
+fits_directory = 'C:\\Users\\LENOVO\Desktop\\Space-Debris-Project\\dataset'
 
 # Output directory for PNG images
-output_directory = 'C:\Users\USER\Desktop\Space-Debris-Project\dataset\output_files'
+output_directory = 'C:\\Users\\LENOVO\\Desktop\\Space-Debris-Project\\dataset\\output_files'
 
 # List of FITS filenames
 fits_filenames = ['space5.fits','tria.fits','please4.fits','space8.fits','space6.fits','space3.fits']  # Add more filenames as needed
@@ -72,7 +73,7 @@ for fits_filename in fits_filenames:
     print(f"The optimal threshold determined by Otsu's method: {optimal_threshold_otsu}")
 
     # Display the original, thresholded (Iterative), and thresholded (Otsu) images for comparison
-    cv2.imshow(np.hstack([img, thresholded_img, thresholded_img_otsu]))
+    cv2.imshow("The Images ",np.hstack([img, thresholded_img, thresholded_img_otsu]))
 
      # Plot histograms
     plt.figure(figsize=(12, 6))
@@ -118,7 +119,7 @@ for fits_filename in fits_filenames:
     colored_image_iterative = colors_iterative[labels_iterative]
 
     # Display the result
-    cv2.imshow(colored_image_iterative)
+    cv2.imshow("Colored Images using iterative threshold",colored_image_iterative)
 
     # Edge detection using the Canny edge detector
     edges = cv2.Canny(thresholded_img, 30, 100)
@@ -152,7 +153,7 @@ for fits_filename in fits_filenames:
     colored_image_iterative = colors_iterative[labels_iterative]
 
     # Display the result
-    cv2.imshow(colored_image_iterative)
+    cv2.imshow("Colored Images using iterative threshold",colored_image_iterative)
 
     # Print the centers of each component (Iterative method)
     for label in range(1, num_labels_iterative):  # Skip label 0 as it corresponds to the background
@@ -197,7 +198,7 @@ for fits_filename in fits_filenames:
         object_id += 1
 
     # Display the result
-    cv2.imshow(image)
+    cv2.imshow("Images",image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
     

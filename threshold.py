@@ -1,3 +1,6 @@
+import numpy as np
+import cv2
+
 def iterative_thresholding(image, initial_threshold=128, max_iterations=50, tolerance=1e-3):
     threshold = initial_threshold
 
