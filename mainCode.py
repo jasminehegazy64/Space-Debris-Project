@@ -202,7 +202,7 @@ for fits_filename in fits_filenames:
     cv2.waitKey(0)
     cv2.destroyAllWindows()
     
-    
+   
 # Display the Gaussian curves for all FITS files
 plt.figure(figsize=(10, 6))
 for i, fits_filename in enumerate(fits_filenames):
@@ -214,7 +214,7 @@ plt.title('Gaussian Curves for FITS Files')
 plt.xlabel('Pixel Intensity')
 plt.ylabel('Frequency')
 plt.show()    
-        
+ 
         
 # Iterate over FITS files and extract header information
 for fits_filename in fits_filenames:
