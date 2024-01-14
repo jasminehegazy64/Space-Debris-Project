@@ -263,4 +263,12 @@ for fits_filename in fits_filenames:
         except KeyError:
             exposure_time = "Not available"
 
-       
+        # Print the information
+        print(f"FITS File: {fits_filename}")
+        print(f"Number of Axis: {naxis}")
+        print(f"Wave Length: {wavelen}")
+        print(f"Field of View (FOV): {fov}")
+        print(f"Pixel Scale: {pixel_scale}")
+        print(f"Exposure Time: {exposure_time}")
+        print(f"Filter Used: {filter_used}")
+        print("-" * 50)
