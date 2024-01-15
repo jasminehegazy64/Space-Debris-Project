@@ -269,36 +269,12 @@ for fits_filename in fits_filenames:
         except KeyError:
             exposure_time = "Not available"
 
-        try:
-            # Extracting Calibration Data (  ) from the header
-            bzero = header['BZERO']
-        except KeyError:
-            bzero = "Not available"
-
-        # Extract the image data (pixel values)
-        image_data = hdul[0].data
-
-        # Calculate the intensity
-        intensity = (image_data - bzero) * exposure_time
-
-        # Create a DataFrame for the current FITS file
-        df = pd.DataFrame({
-            'FITS File': [fits_filename],
-            'Number of Axis': [naxis],
-            'Wave Length': [wavelen],
-            'Date of Observation': [dateobs],
-            'Pixel Scale': [pixel_scale],
-            'Exposure Time': [exposure_time],
-            'Physical Zero Value': [bzero],
-            'Filter Used': [filter_used],
-            'Intensity': [intensity.sum()]  
-        })
-
-        # Append the DataFrame to the list
-        dfs.append(df)
-
-# Concatenate the list of DataFrames into a single DataFrame
-df_combined = pd.concat(dfs, ignore_index=True)
-
-# Display the resulting DataFrame
-print(df_combined)
+        # Print the information
+        print(f"FITS File: {fits_filename}")
+        print(f"Number of Axis: {naxis}")
+        print(f"Wave Length: {wavelen}")
+        print(f"Field of View (FOV): {fov}")
+        print(f"Pixel Scale: {pixel_scale}")
+        print(f"Exposure Time: {exposure_time}")
+        print(f"Filter Used: {filter_used}")
+        print("-" * 50)
