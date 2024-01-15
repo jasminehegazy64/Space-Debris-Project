@@ -13,6 +13,8 @@ from scipy.optimize import curve_fit
 from Convert_debris import convert_fits_to_image
 from threshold import iterative_thresholding, otsu_thresholding
 from gaussian_curve import gaussian_curve
+import pandas as pd
+
 
 # Directory containing FITS files
 fits_directory = 'C:\\Users\\LENOVO\Desktop\\Space-Debris-Project\\dataset'
@@ -75,6 +77,7 @@ for fits_filename in fits_filenames:
     # Display the original, thresholded (Iterative), and thresholded (Otsu) images for comparison
     cv2.imshow("The Images ",np.hstack([img, thresholded_img, thresholded_img_otsu]))
 
+
      # Plot histograms
     plt.figure(figsize=(12, 6))
 
@@ -104,10 +107,9 @@ for fits_filename in fits_filenames:
     plt.title(f'Histogram with Gaussian Curve for {fits_filename}')
     plt.ylabel('Frequency')
     plt.show()
-
-
     plt.tight_layout()
     plt.show()
+
 
     # Connected components labeling for thresholded image (Iterative method) becuase the iterative method gets better results
     num_labels_iterative, labels_iterative, stats_iterative, centroids_iterative = cv2.connectedComponentsWithStats(thresholded_img, connectivity=8)
@@ -155,6 +157,7 @@ for fits_filename in fits_filenames:
     # Display the result
     cv2.imshow("Colored Images using iterative threshold",colored_image_iterative)
 
+
     # Print the centers of each component (Iterative method)
     for label in range(1, num_labels_iterative):  # Skip label 0 as it corresponds to the background
         area_iterative = stats_iterative[label, cv2.CC_STAT_AREA]
@@ -177,6 +180,7 @@ for fits_filename in fits_filenames:
     # Print the number of white objects (excluding the background) for the iterative method
     num_white_objects_iterative = num_labels_iterative - 1  # Subtract 1 for the background
     print(f'The number of white objects (Iterative) is: {num_white_objects_iterative}')
+
 
     #COORDINATES OF THE COMPONENTS
     num_labels_iterative, labels_iterative, stats_iterative, centroids_iterative = cv2.connectedComponentsWithStats(thresholded_img, connectivity=8)
@@ -214,6 +218,10 @@ plt.xlabel('Pixel Intensity')
 plt.ylabel('Frequency')
 plt.show()    
  
+ 
+# Create a list to store DataFrames for each FITS file
+dfs = []
+
 # Iterate over FITS files and extract header information
 for fits_filename in fits_filenames:
     # Full path to the FITS file
@@ -226,10 +234,10 @@ for fits_filename in fits_filenames:
 
         # Extract relevant information
         try:
-            # Extracting Field of View (FOV) from the header
-            fov = header['TFIELDS']
+            # Extracting the date of observation
+            dateobs = header['DATE-OBS']
         except KeyError:
-            fov = "Not available"
+            dateobs = "Not available"
 
         try:
             # Extracting the number of axis
@@ -261,12 +269,36 @@ for fits_filename in fits_filenames:
         except KeyError:
             exposure_time = "Not available"
 
-        # Print the information
-        print(f"FITS File: {fits_filename}")
-        print(f"Number of Axis: {naxis}")
-        print(f"Wave Length: {wavelen}")
-        print(f"Field of View (FOV): {fov}")
-        print(f"Pixel Scale: {pixel_scale}")
-        print(f"Exposure Time: {exposure_time}")
-        print(f"Filter Used: {filter_used}")
-        print("-" * 50)
+        try:
+            # Extracting Calibration Data (  ) from the header
+            bzero = header['BZERO']
+        except KeyError:
+            bzero = "Not available"
+
+        # Extract the image data (pixel values)
+        image_data = hdul[0].data
+
+        # Calculate the intensity
+        intensity = (image_data - bzero) * exposure_time
+
+        # Create a DataFrame for the current FITS file
+        df = pd.DataFrame({
+            'FITS File': [fits_filename],
+            'Number of Axis': [naxis],
+            'Wave Length': [wavelen],
+            'Date of Observation': [dateobs],
+            'Pixel Scale': [pixel_scale],
+            'Exposure Time': [exposure_time],
+            'Physical Zero Value': [bzero],
+            'Filter Used': [filter_used],
+            'Intensity': [intensity.sum()]  
+        })
+
+        # Append the DataFrame to the list
+        dfs.append(df)
+
+# Concatenate the list of DataFrames into a single DataFrame
+df_combined = pd.concat(dfs, ignore_index=True)
+
+# Display the resulting DataFrame
+print(df_combined)
