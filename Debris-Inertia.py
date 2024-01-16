@@ -8,6 +8,9 @@ import matplotlib.pyplot as plt
 from PIL import Image
 from math import *
 import csv
+import mahotas.features.texture as texture
+from skimage.feature import local_binary_pattern
+
 
 def convert_fits_to_image(fits_filename, output_image_filename):
     # Open the FITS file
@@ -30,8 +33,11 @@ def convert_fits_to_image(fits_filename, output_image_filename):
         plt.savefig(output_image_filename, bbox_inches='tight', pad_inches=0)
         plt.close()
 
-def iterative_thresholding(image, initial_threshold=128, max_iterations=50, tolerance=1e-3):  # YA SALMA : MERGE BAA BEL CODES EL TANYA, YA SHELE DOL WE IMPORT MN HETA TANYA WE HENA TEBAA EL INERTIA BAS
-    threshold = initial_threshold                                                             # YA SALMA: aham haga fel merge en inertia tebaa akher haga baad kol el extractions// prepocessing
+
+# YA SALMA : MERGE BAA BEL CODES EL TANYA, YA SHELE DOL WE IMPORT MN HETA TANYA WE HENA TEBAA EL INERTIA BAS
+def iterative_thresholding(image, initial_threshold=128, max_iterations=50, tolerance=1e-3):
+    # YA SALMA: aham haga fel merge en inertia tebaa akher haga baad kol el extractions// prepocessing
+    threshold = initial_threshold
 
     for iteration in range(max_iterations):
         # Segment the image into foreground and background based on the threshold
@@ -53,12 +59,14 @@ def iterative_thresholding(image, initial_threshold=128, max_iterations=50, tole
 
     return threshold
 
+
 def momentOfInertia(xWidth, yHeight, xCG, yCG):
     Ixx = sum((y - yCG)**2 for y in yHeight)
     Iyy = sum((x - xCG)**2 for x in xWidth)
     Ixy = sum((x - xCG)*(y - yCG) for x, y in zip(xWidth, yHeight))
 
     return Ixx, Iyy, Ixy
+
 
 def mainInteria(Ixx, Iyy, Ixy, yHeight, xWidth):
     Imain1 = 0.5 * (Ixx + Iyy + np.sqrt((Ixx - Iyy)**2 + 4*(Ixy)**2))
@@ -74,16 +82,20 @@ def mainInteria(Ixx, Iyy, Ixy, yHeight, xWidth):
 
     return finalInteria
 
+
 # Directory containing FITS files
 fits_directory = '/content/drive/MyDrive/Colab-Debris'  # YA SALMA : EZBOTY PATH
 
 # Output directory for PNG images
-output_directory = '/content/drive/MyDrive/Colab-Debris/output_images' # YA SALMA : EZBOTY PATH
+# YA SALMA : EZBOTY PATH
+output_directory = '/content/drive/MyDrive/Colab-Debris/output_images'
 
 
-#csvfile
-csv_file_path = '/content/drive/MyDrive/Colab-Debris/output_images/InetriaOutPut.csv' # YA SALMA : EZBOTY PATH
-fits_filenames = ['space5.fits','tria.fits','please4.fits','space8.fits','space6.fits','space3.fits']  # Add more filenames as needed
+# csvfile
+# YA SALMA : EZBOTY PATH
+csv_file_path = '/content/drive/MyDrive/Colab-Debris/output_images/InetriaOutPut.csv'
+fits_filenames = ['space5.fits', 'tria.fits', 'please4.fits', 'space8.fits',
+                  'space6.fits', 'space3.fits']  # Add more filenames as needed
 # Open the CSV file in write mode
 with open(csv_file_path, 'w', newline='') as csvfile:
     # Create a CSV writer
@@ -97,7 +109,8 @@ with open(csv_file_path, 'w', newline='') as csvfile:
         full_path_fits = os.path.join(fits_directory, fits_filename)
 
         # Output PNG filename (assuming the same name with a different extension)
-        output_image_filename = os.path.join(output_directory, os.path.splitext(fits_filename)[0] + '_preprocessed.png')
+        output_image_filename = os.path.join(
+            output_directory, os.path.splitext(fits_filename)[0] + '_preprocessed.png')
         convert_fits_to_image(full_path_fits, output_image_filename)
 
         image = cv2.imread(output_image_filename)
@@ -128,13 +141,87 @@ with open(csv_file_path, 'w', newline='') as csvfile:
             # Print the coordinates of the bounding box
             print(f"Object {object_id} in {fits_filename}:")
 
-            cv2.putText(image, str(object_id), (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            cv2.putText(image, str(object_id), (x, y - 5),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
             # Increment Id
             object_id += 1
 
-            Ixx, Iyy, Ixy = momentOfInertia(xWidth, yHeight, center_x, center_y)
+            Ixx, Iyy, Ixy = momentOfInertia(
+                xWidth, yHeight, center_x, center_y)
             finalint = mainInteria(Ixx, Iyy, Ixy, yHeight, xWidth)
 
             # Write the row to the CSV file
-            csvwriter.writerow([fits_filename, object_id - 1, 'Debris' if finalint > 10 else 'Celestial Object'])
+            csvwriter.writerow([fits_filename, object_id - 1,
+                               'Debris' if finalint > 10 else 'Celestial Object'])
+
+# HANA
+# Directory containing FITS files
+fits_directory = '/content/drive/MyDrive/Colab-Debris/'
+
+# List of FITS filenames
+fits_filenames = ['space5.fits', 'tria.fits', 'please4.fits',
+                  'space8.fits', 'space6.fits', 'space3.fits']
+
+# Create lists to store extracted features
+fits_files_list = []
+haralick_mean_list = []
+haralick_std_list = []
+lbp_hist_list = []
+
+# Iterate over FITS files and extract header information
+for fits_filename in fits_filenames:
+    # Full path to the FITS file
+    full_path_fits = os.path.join(fits_directory, fits_filename)
+
+    # Open the FITS file
+    with fits.open(full_path_fits) as hdul:
+        # Access the data from the primary HDU
+        data = hdul[0].data
+
+    # Convert FITS data to a grayscale image (adjust normalization if necessary)
+    image = cv2.normalize(data, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
+
+    # Calculate Haralick texture features
+    haralick_features = texture.haralick(image)
+
+    # Calculate Local Binary Patterns (LBP)
+    radius = 3
+    n_points = 8 * radius
+    lbp = local_binary_pattern(image, n_points, radius, method='uniform')
+
+    # Extract LBP histogram as features
+    lbp_hist, _ = np.histogram(lbp, bins=np.arange(
+        0, n_points + 3), range=(0, n_points + 2))
+
+    # Append the features to the lists
+    fits_files_list.append(fits_filename)
+    haralick_mean_list.append(np.mean(haralick_features, axis=0))
+    haralick_std_list.append(np.std(haralick_features, axis=0))
+    lbp_hist_list.append(lbp_hist)
+
+    # Print the information
+    print(f"FITS File: {fits_filename}")
+    print("Haralick Texture Features:")
+    print("Mean:", np.mean(haralick_features, axis=0))
+    print("Standard Deviation:", np.std(haralick_features, axis=0))
+    print("Local Binary Pattern Histogram:", lbp_hist)
+    print("-" * 50)
+
+
+# Create a DataFrame
+df_second = pd.DataFrame({
+    'FITS File': fits_files_list,
+    'Haralick Mean': haralick_mean_list,
+    'Haralick Std': haralick_std_list,
+    'LBP Histogram': lbp_hist_list
+})
+
+# Save the DataFrame to a CSV file
+csv_filename = '/content/drive/MyDrive/Colab-Debris/texture_features.csv'
+
+# Concatenate df_first and df_second
+# df_combined = pd.concat([df_first, df_second], ignore_index=True)
+# Merge the DataFrames based on the "FITS File" column
+df_combined = pd.merge(df_one, df_second, on='FITS File', how='outer')
+df_combined.to_csv(csv_filename, index=False)
