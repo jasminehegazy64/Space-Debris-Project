@@ -1,12 +1,13 @@
-import pandas as pd 
-import numpy as np 
-import math 
-import os 
+import pandas as pd
+import numpy as np
+import math
+import os
 import cv2
 from astropy.io import fits
 import matplotlib.pyplot as plt
 from PIL import Image
 from math import *
+import csv
 
 def convert_fits_to_image(fits_filename, output_image_filename):
     # Open the FITS file
@@ -29,8 +30,8 @@ def convert_fits_to_image(fits_filename, output_image_filename):
         plt.savefig(output_image_filename, bbox_inches='tight', pad_inches=0)
         plt.close()
 
-def iterative_thresholding(image, initial_threshold=128, max_iterations=50, tolerance=1e-3):
-    threshold = initial_threshold
+def iterative_thresholding(image, initial_threshold=128, max_iterations=50, tolerance=1e-3):  # YA SALMA : MERGE BAA BEL CODES EL TANYA, YA SHELE DOL WE IMPORT MN HETA TANYA WE HENA TEBAA EL INERTIA BAS
+    threshold = initial_threshold                                                             # YA SALMA: aham haga fel merge en inertia tebaa akher haga baad kol el extractions// prepocessing
 
     for iteration in range(max_iterations):
         # Segment the image into foreground and background based on the threshold
@@ -51,99 +52,89 @@ def iterative_thresholding(image, initial_threshold=128, max_iterations=50, tole
         threshold = new_threshold
 
     return threshold
-def momentOfInertia (xWidth, yHeight, xCG, yCG): #how to take output mn function we ahoto fe func tanya?
-      """
-      
-2nd: calculate the moment of inertia 
-    Ixx= summations (y-yCG)^2 and 
-    Iyy= summation (x-xCG)^2 
 
-3rd: calculate the moment of inertia of
-    Ixy= Ixx*Iyy
+def momentOfInertia(xWidth, yHeight, xCG, yCG):
+    Ixx = sum((y - yCG)**2 for y in yHeight)
+    Iyy = sum((x - xCG)**2 for x in xWidth)
+    Ixy = sum((x - xCG)*(y - yCG) for x, y in zip(xWidth, yHeight))
 
-        """
-      Ixx =sum ((y-yCG)**2 for y in yHeight)
-      Iyy= sum ((x- xCG)**2 for x in xWidth)
-      Ixy=sum((x-xCG)*(y-yCG) for x,y in zip(xWidth,yHeight))
-        
+    return Ixx, Iyy, Ixy
 
-      return Ixx, Iyy, Ixy
+def mainInteria(Ixx, Iyy, Ixy, yHeight, xWidth):
+    Imain1 = 0.5 * (Ixx + Iyy + np.sqrt((Ixx - Iyy)**2 + 4*(Ixy)**2))
+    Imain2 = 0.5 * (Ixx + Iyy - np.sqrt((Ixx - Iyy)**2 + 4*(Ixy)**2))
 
-def mainInteria(Ixx,Iyy,Ixy,yHeight,xWidth):
-     """ 
-     4th: calculate the principal interial moments 
-    Imain1= 1/2 *(Ixx+Iyy+ sqrt((Ixx-Iyy)^2+ 4*(Ixy)^2)) 
-    Imain2= 1/2 *(Ixx+Iyy- sqrt((Ixx-Iyy)^2+ 4*(Ixy)^2)) 
+    epsilonn = 10
 
-    Theta= -1/2 atan( 2*Ixy/Ixx-Iyy)
-    
-    """
-     Imain1= 0.5 *(Ixx+Iyy+ sqrt((Ixx-Iyy)**2+ 4*(Ixy)**2))
-     Imain2= 0.5 *(Ixx+Iyy- sqrt((Ixx-Iyy)**2+ 4*(Ixy)**2))
-     
-     epsilonn=10
+    finalInteria = Imain1 / Imain2
+    if finalInteria > epsilonn:
+        print(f"This object  is predicted to be debris")
+    else:
+        print(f"This object  is predicted to be a Celestial object")
 
-     finalInteria= Imain1 / Imain2
-     if finalInteria > epsilonn:
-          print("This object is predicted to be debris")
-     else:
-          print("this object is predicted to be a Celestial objects")
-     return finalInteria
+    return finalInteria
+
 # Directory containing FITS files
-fits_directory = 'C:\Users\USER\Desktop\Space-Debris-Project\dataset'
+fits_directory = '/content/drive/MyDrive/Colab-Debris'  # YA SALMA : EZBOTY PATH
 
 # Output directory for PNG images
-output_directory ='C:\Users\USER\Desktop\Space-Debris-Project\dataset\output_files'
-# fits_filenames = ['NEOS_SCI_2022001030508.fits','NEOS_SCI_2022001030535.fits','NEOS_SCI_2022001030602.fits',
-#                   'NEOS_SCI_2022001030629.fits','NEOS_SCI_2022001030656.fits','NEOS_SCI_2022001030723.fits',
-#                   'NEOS_SCI_2022001030750.fits','NEOS_SCI_2022001030817.fits','NEOS_SCI_2022001030844.fits',
-#                   'NEOS_SCI_2022001030911.fits','NEOS_SCI_2022001030938.fits','NEOS_SCI_2022001031005.fits',
-#                   'NEOS_SCI_2022001031032.fits','NEOS_SCI_2022001031059.fits','NEOS_SCI_2022001031126.fits',
-#                   'NEOS_SCI_2022001031153.fits','NEOS_SCI_2022001031220.fits','NEOS_SCI_2022001031247.fits',
-#                   'NEOS_SCI_2022001031314.fits','NEOS_SCI_2022001031341.fits','NEOS_SCI_2022001031408.fits',
-#                   'NEOS_SCI_2022001031435.fits','NEOS_SCI_2022001031502.fits','NEOS_SCI_2022001031529.fits',
-#                   'NEOS_SCI_2022001031556.fits','NEOS_SCI_2022001031623.fits','NEOS_SCI_2022001031650.fits',
-#                   'NEOS_SCI_2022001031717.fits','NEOS_SCI_2022001031744.fits','NEOS_SCI_2022001031811.fits',
-#                   'NEOS_SCI_2022001031838.fits','NEOS_SCI_2022001031905.fits','NEOS_SCI_2022001031959.fits',
-#                   'NEOS_SCI_2022001032026.fits','NEOS_SCI_2022001032053.fits']  # Add more filenames as needed
+output_directory = '/content/drive/MyDrive/Colab-Debris/output_images' # YA SALMA : EZBOTY PATH
 
-fits_filenames = ['please.fits','please4.fits','please5.fits','please6.fits','please7.fits','tria.fits']  # Add more filenames as needed
-for fits_filename in fits_filenames:
-    # Full path to the FITS file
-    full_path_fits = os.path.join(fits_directory, fits_filename)
 
-    # Output PNG filename (assuming the same name with a different extension)
-    output_image_filename = os.path.join(output_directory, os.path.splitext(fits_filename)[0] + '_preprocessed.png')
-    convert_fits_to_image(full_path_fits, output_image_filename)
+#csvfile
+csv_file_path = '/content/drive/MyDrive/Colab-Debris/output_images/InetriaOutPut.csv' # YA SALMA : EZBOTY PATH
+fits_filenames = ['space5.fits','tria.fits','please4.fits','space8.fits','space6.fits','space3.fits']  # Add more filenames as needed
+# Open the CSV file in write mode
+with open(csv_file_path, 'w', newline='') as csvfile:
+    # Create a CSV writer
+    csvwriter = csv.writer(csvfile)
 
-    image = cv2.imread(output_image_filename)
-    img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # Write the header row
+    csvwriter.writerow(['Image', 'Object ID', 'Prediction'])
 
-    # Apply the iterative thresholding algorithm to the image
-    optimal_threshold = iterative_thresholding(img)
+    for fits_filename in fits_filenames:
+        # Full path to the FITS file
+        full_path_fits = os.path.join(fits_directory, fits_filename)
 
-    # Threshold the image using the optimal threshold
-    thresholded_img = (img >= optimal_threshold).astype(np.uint8) * 255
+        # Output PNG filename (assuming the same name with a different extension)
+        output_image_filename = os.path.join(output_directory, os.path.splitext(fits_filename)[0] + '_preprocessed.png')
+        convert_fits_to_image(full_path_fits, output_image_filename)
 
-    num_labels_iterative, labels_iterative, stats_iterative, centroids_iterative = cv2.connectedComponentsWithStats(thresholded_img, connectivity=8)
-    # for label in range(1, num_labels_iterative): 
-    #   center_x, center_y = centroids_iterative[label] 
-    #   object_id = 1
-    # # Iterate through each detected object
-    #   for i in range(1, num_labels_iterative):
-    # # Get the coordinates of the bounding box for the current object
-    #      x, y, w, h, area = stats_iterative[i]
-    #      Ixx,Iyy,Ixy=momentOfInertia (w, h, center_x, center_y)
+        image = cv2.imread(output_image_filename)
+        img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    for label in range(1, num_labels_iterative): 
+        # Apply the iterative thresholding algorithm to the image
+        optimal_threshold = iterative_thresholding(img)
+
+        # Threshold the image using the optimal threshold
+        thresholded_img = (img >= optimal_threshold).astype(np.uint8) * 255
+
+        num_labels_iterative, labels_iterative, stats_iterative, centroids_iterative = cv2.connectedComponentsWithStats(
+            thresholded_img, connectivity=8)
+
+        # Reset object_id for each new image
+        object_id = 1
+
+        for label in range(1, num_labels_iterative):
             center_x, center_y = centroids_iterative[label]
-            
+
             # Get the coordinates of the bounding box for the current object
             x, y, w, h, area = stats_iterative[label]
-            
+
             # Ensure xWidth and yHeight are iterable (lists)
             xWidth = list(range(w))
             yHeight = list(range(h))
-            
+
+            # Print the coordinates of the bounding box
+            print(f"Object {object_id} in {fits_filename}:")
+
+            cv2.putText(image, str(object_id), (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
+            # Increment Id
+            object_id += 1
+
             Ixx, Iyy, Ixy = momentOfInertia(xWidth, yHeight, center_x, center_y)
-            finalint=mainInteria(Ixx,Iyy,Ixy,yHeight,xWidth)
+            finalint = mainInteria(Ixx, Iyy, Ixy, yHeight, xWidth)
+
+            # Write the row to the CSV file
+            csvwriter.writerow([fits_filename, object_id - 1, 'Debris' if finalint > 10 else 'Celestial Object'])
