@@ -8,51 +8,11 @@ import matplotlib.pyplot as plt
 from PIL import Image
 from math import *
 import csv
+from Convert_debris import convert_fits_to_image
+from threshold import iterative_thresholding
 
-def convert_fits_to_image(fits_filename, output_image_filename):
-    # Open the FITS file
-    with fits.open(fits_filename) as hdul:
-        # Get the data from the primary HDU (Header Data Unit)
-        data = hdul[0].data
-
-        # Noise reduction using Gaussian filter
-        data = cv2.GaussianBlur(data, (5, 5), 0)
-
-        # Sharpening using Laplacian filter
-        laplacian = cv2.Laplacian(data, cv2.CV_64F)
-        sharpened = data - 0.8 * laplacian
-
-        # Plot the data as an image without grid
-        plt.imshow(sharpened, cmap='gray')
-        plt.axis('off')  # Turn off the axis (including grid)
-
-        # Save the preprocessed image as a PNG file
-        plt.savefig(output_image_filename, bbox_inches='tight', pad_inches=0)
-        plt.close()
-
-def iterative_thresholding(image, initial_threshold=128, max_iterations=50, tolerance=1e-3):  # YA SALMA : MERGE BAA BEL CODES EL TANYA, YA SHELE DOL WE IMPORT MN HETA TANYA WE HENA TEBAA EL INERTIA BAS
-    threshold = initial_threshold                                                             # YA SALMA: aham haga fel merge en inertia tebaa akher haga baad kol el extractions// prepocessing
-
-    for iteration in range(max_iterations):
-        # Segment the image into foreground and background based on the threshold
-        foreground = image >= threshold
-        background = image < threshold
-
-        # Compute the mean intensity of each group
-        foreground_mean = np.mean(image[foreground])
-        background_mean = np.mean(image[background])
-
-        # Compute the new threshold as the average of the means
-        new_threshold = (foreground_mean + background_mean) / 2.0
-
-        # Check for convergence
-        if abs(new_threshold - threshold) < tolerance:
-            break
-
-        threshold = new_threshold
-
-    return threshold
-
+ # YA SALMA : MERGE BAA BEL CODES EL TANYA, YA SHELE DOL WE IMPORT MN HETA TANYA WE HENA TEBAA EL INERTIA BAS
+ # YA SALMA: aham haga fel merge en inertia tebaa akher haga baad kol el extractions// prepocessing
 def momentOfInertia(xWidth, yHeight, xCG, yCG):
     Ixx = sum((y - yCG)**2 for y in yHeight)
     Iyy = sum((x - xCG)**2 for x in xWidth)
