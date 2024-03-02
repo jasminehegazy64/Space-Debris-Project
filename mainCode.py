@@ -487,3 +487,46 @@ print(f'All center coordinates saved to {csv_filename}')
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
+
+# Function to draw trajectories on separate images for each object
+def draw_individual_trajectories(coordinates, output_directory):
+    # Create the output directory if it doesn't exist
+    os.makedirs(output_directory, exist_ok=True)
+
+    # Iterate over each object's components and draw trajectories
+    for obj_id, _, x, y, _, _ in coordinates:
+        obj_coordinates = [(int(x), int(y))]
+
+        # Find coordinates for the same object
+        for _, _, next_x, next_y, _, _ in coordinates:
+            if obj_id == _ and (next_x, next_y) not in obj_coordinates:
+                obj_coordinates.append((int(next_x), int(next_y)))
+
+        # Create a black image
+        img = np.zeros((512, 512, 3), dtype=np.uint8)
+
+        # Draw trajectories on the image
+        color = tuple(np.random.randint(0, 255, 3).tolist())
+        for i in range(len(obj_coordinates) - 1):
+            cv2.line(img, obj_coordinates[i], obj_coordinates[i+1], color, 2)
+
+        # Save the image with the trajectory
+        output_filename = os.path.join(
+            output_directory, f'object_{obj_id}_trajectory.png')
+        cv2.imwrite(output_filename, img)
+
+
+# Read the output coordinates CSV
+# Update with the actual path
+csv_filename = '/content/drive/MyDrive/Colab-Debris/output2024coordinates_all.csv'
+with open(csv_filename, mode='r') as file:
+    reader = csv.reader(file)
+    next(reader)  # Skip the header
+    coordinates = [list(map(float, row)) for row in reader]
+
+# Draw individual trajectories and save the images
+output_trajectory_directory = '/content/drive/MyDrive/Colab-Debris/individual2024_trajectories'
+draw_individual_trajectories(coordinates, output_trajectory_directory)
+
+print(f'Individual trajectory images saved to {output_trajectory_directory}')
