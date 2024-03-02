@@ -388,3 +388,102 @@ tracks = track_objects(image_directory)
 # Print the tracked object positions at each frame
 for i, track in enumerate(tracks):
     print(f'Frame {i + 1}: Object position {track}')
+
+
+# on 2024 images
+
+# Function for Gaussian curve
+
+def gaussian_curve(x, a, b, c):
+    return a * np.exp(-(x - b)**2 / (2 * c**2))
+
+
+# Directory containing PNG images
+png_directory = '/content/drive/MyDrive/2024_001_images'
+
+# Output directory for processed images
+output_directory = '/content/drive/MyDrive/Colab-Debris'
+
+# List to store all center coordinates
+all_center_coordinates = []
+
+# Iterate over PNG files in the directory
+for png_filename in os.listdir(png_directory):
+    # Skip non-PNG files
+    if not png_filename.lower().endswith('.png'):
+        continue
+
+    # Full path to the PNG file
+    full_path_png = os.path.join(png_directory, png_filename)
+
+    # Read the PNG image
+    image = cv2.imread(full_path_png)
+    img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Plot histogram for original image
+    hist_original, bin_edges = np.histogram(
+        img.flatten(), bins=256, range=[0, 256])
+
+    # Apply the iterative thresholding algorithm to the image
+    optimal_threshold = iterative_thresholding(img)
+
+    # Threshold the image using the optimal threshold
+    thresholded_img = (img >= optimal_threshold).astype(np.uint8) * 255
+
+    # Connected components labeling for thresholded image (Iterative method) because the iterative method gets better results
+    num_labels_iterative, labels_iterative, stats_iterative, centroids_iterative = cv2.connectedComponentsWithStats(
+        thresholded_img, connectivity=8)
+
+    # Create a random color map for visualization
+    colors_iterative = np.random.randint(
+        0, 255, size=(num_labels_iterative, 3), dtype=np.uint8)
+
+    # Create a colored image based on the labels
+    colored_image_iterative = colors_iterative[labels_iterative]
+
+    # Display the result
+    cv2_imshow(colored_image_iterative)
+    cv2.waitKey(0)
+
+    # Edge detection using the Canny edge detector
+    edges = cv2.Canny(thresholded_img, 30, 100)
+
+    # Save the processed images (Iterative method)
+    cv2.imwrite(os.path.join(output_directory,
+                f'processed_{png_filename}_iterative.png'), colored_image_iterative)
+
+    # Print the area of each component (Iterative method)
+    center_coordinates_list = []
+    for label in range(1, num_labels_iterative):
+        area_iterative = stats_iterative[label, cv2.CC_STAT_AREA]
+        center_x, center_y = centroids_iterative[label]
+        component_mask = (labels_iterative == label).astype(np.uint8)
+        edges_in_component = cv2.bitwise_and(edges, edges, mask=component_mask)
+        edge_count = np.count_nonzero(edges_in_component)
+        corners = cv2.goodFeaturesToTrack(
+            thresholded_img * component_mask, maxCorners=100, qualityLevel=0.01, minDistance=0.1)
+        num_corners = corners.shape[0] if corners is not None else 0
+
+        print(f"Component {label} (Iterative): Area = {area_iterative}, Center = ({center_x}, {center_y}), Edge count = {edge_count}, Number of Corners = {num_corners}")
+
+        # Append center coordinates to the list
+        center_coordinates_list.append(
+            [label, area_iterative, center_x, center_y, edge_count, num_corners])
+
+    # Add center coordinates to the overall list
+    all_center_coordinates.extend(center_coordinates_list)
+
+# Save all center coordinates to a single CSV
+csv_filename = os.path.join(output_directory, 'output2024coordinates_all.csv')
+with open(csv_filename, mode='w', newline='') as file:
+    writer = csv.writer(file)
+    # Write header
+    writer.writerow(['Label', 'Area', 'Center_X',
+                    'Center_Y', 'Edge_Count', 'Num_Corners'])
+    # Write data
+    writer.writerows(all_center_coordinates)
+
+print(f'All center coordinates saved to {csv_filename}')
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
