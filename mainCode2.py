@@ -36,7 +36,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from astropy.io import fits
 import astropy
-!pip install mahotas
 
 
 drive.mount('/content/drive', force_remount=True)
