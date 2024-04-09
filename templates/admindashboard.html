@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>ESPACIO</title>
+	<meta charset="utf-8">
+	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+
+<body>
+
+	<!-- Header -->
+	<header id="header">
+		<div class="inner">
+			
+			<a href="{{ url_for('homeindex') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43"></a>
+			<nav id="nav"><a href="{{ url_for('admindashboard') }}">Admin Dashboard</a>
+				<a href="{{ url_for('editdeleteusers') }}"> Users</a>
+				<a href="{{ url_for('messages') }}">Messages</a>
+				<a href="{{ url_for('allreports') }}">Reports</a>
+				
+			</nav><a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+		</div>
+	</header><!-- Banner -->
+	<section id="banner">
+		<h1>Welcome to ESPACIO!</h1>
+		<h1>Admin Dashboard
+        </h1>
+	</section>
+
+	<!-- Two -->
+	<!-- <section id="two" class="wrapper style1 special">
+		<div class="inner">
+			<header>
+				<h2>EXPLORE MORE ABOUT SPACE!</h2>
+			</header>
+			<div class="flex flex-4">
+				<div class="box person">
+					<div class="image round">
+						<img src="images/HumanInSpace.png" alt="Person 1" width="168" height="168">
+					</div>
+					<h3>Humans In Space</h3>
+					<a href="#" class="button special">More</a>
+				</div>
+				<div class="box person">
+					<div class="image round">
+						<img src="images/Missions.png" alt="Person 2" width="168" height="168">
+					</div>
+					<h3>Missions</h3>
+					<a href="#" class="button special">More</a>
+				</div>
+				<div class="box person">
+					<div class="image round">
+						<img src="images/NasaHistory.png" alt="Person 3" width="168" height="168">
+					</div>
+					<h3>NASA History</h3>
+					<a href="#" class="button special">More</a>
+				</div>
+				<div class="box person">
+					<div class="image round">
+						<img src="images/ValueOfNasa.png" alt="Person 4" width="168" height="168">
+					</div>
+					<h3>Value of NASA</h3>
+					<a href="#" class="button special">More</a>
+				</div>
+			</div>
+		</div>
+	</section>Footer -->
+	<footer id="footer">
+		<div class="inner">
+			<div class="flex">
+				<ul class="icons">
+					<li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+					<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+					<li><a href="#" class="icon fa-linkedin"><span class="label">linkedIn</span></a></li>
+					<li><a href="#" class="icon fa-pinterest-p"><span class="label">Pinterest</span></a></li>
+					<li><a href="#" class="icon fa-vimeo"><span class="label">Vimeo</span></a></li>
+				</ul>
+			</div>
+		</div>
+	</footer>
+	<div class="copyright">
+		ESPACIO : Detecting, Tracking, and Collision Prediction of Space Debris
+	</div>
+
+	<!-- Scripts -->
+	<script src="static/js/jquery.min.js"></script>
+	<script src="static/js/skel.min.js"></script>
+	<script src="static/js/util.js"></script>
+	<script src="static/js/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>ESPACIO</title>
+    <meta charset="utf-8">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+
+<body class="subpage">
+
+    <!-- Header -->
+    <header id="header">
+        <div class="inner">
+			<a href="{{ url_for('homeindex') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43"></a>
+            <nav id="nav"><a href="{{ url_for('homeindex') }}">Home</a>
+                <a href="{{ url_for('document') }}">Documentation</a>
+                <a href="{{ url_for('contactus') }}">Contact Us</a>
+                <a href="{{ url_for('aboutus') }}">About Us</a>
+                <a href="{{ url_for('reports') }}">Reports</a>
+                <a href="{{ url_for('account') }}">Account</a>
+                <a href="{{ url_for('signinindex') }}">Sign In</a>
+                <a href="{{ url_for('signupindex') }}">Sign Up</a>
+                <a href="{{ url_for('project') }}">Project</a>
+                <a href="{{ url_for('admindashboard') }}">Admin Dashboard</a>
+            </nav><a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+        </div>
+    </header><!-- Banner -->
+    <section id="banner">
+        <h1>Account</h1>
+    </section>
+    <section id="main" class="wrapper">
+        <div class="inner">
+
+            <!-- Form -->
+            <form method="post" action="#">
+                <center>
+                    <div class="flex flex-2">
+                        <center>
+                            <article>
+                                <div class="image fit">
+                                  <img src="{{ url_for('static', filename='images/account.png') }}" alt="account" width="576" height="196">
+                                </div>
+                            </article>
+                        </center>
+                    </div>
+                    <div class="row uniform">
+
+                        <div class="6u 12u$(xsmall)">
+                            <span type="text" name="fname" id="fname" value="" placeholder="fname">Your First Name
+                            </span>
+                        </div>
+                        <div class="6u$ 12u$(xsmall)">
+                            <span type="lname" name="lname" id="lname" value="" placeholder="lname"> Your Last Name
+                            </span>
+                        </div>
+                        <div class="6u 12u$(xsmall)">
+                            <span type="email" name="email" id="email" value="" placeholder="email"> Your Email</span>
+                        </div>
+                        <div class="6u$ 12u$(xsmall)">
+                            <span type="text" name="age" id="age" value="" placeholder="age"> Your Age</span>
+                        </div>
+
+                        <!-- Break -->
+                        <div class="12u$">
+                            <center>
+                                <ul class="actions">
+                                    <li><input type="submit" value="Logout"></li>
+                                </ul>
+                            </center>
+                        </div>
+                    </div>
+                </center>
+            </form>
+        </div>
+    </section>
+<!-- Footer -->
+<footer id="footer">
+    <div class="inner">
+        <div class="flex">
+            <ul class="icons">
+                <li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+                <li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+                <li><a href="#" class="icon fa-linkedin"><span class="label">linkedIn</span></a></li>
+                <li><a href="#" class="icon fa-pinterest-p"><span class="label">Pinterest</span></a></li>
+                <li><a href="#" class="icon fa-vimeo"><span class="label">Vimeo</span></a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+<div class="copyright">
+    ESPACIO : Detecting, Tracking, and Collision Prediction of Space Debris
+</div>
+
+<!-- Scripts -->
+<script src="static/js/jquery.min.js"></script>
+<script src="static/js/skel.min.js"></script>
+<script src="static/js/util.js"></script>
+<script src="static/js/main.js"></script>
+</body>
+
+</html>
