@@ -54,7 +54,7 @@
                     <!-- Break -->
                     <div class="12u$">
                         <ul class="actions">
-                            <li><input type="submit" value="Sign In"></li>
+                            <li><a href="{{ url_for('homeindex') }}"><input type="button" value="Sign In" class="alt"></a></li>
                             <br><br>
                             No Account?
                             <br>
@@ -85,10 +85,10 @@
 </div>
 
 <!-- Scripts -->
-<script src="static/js/jquery.min.js"></script>
-<script src="static/js/skel.min.js"></script>
-<script src="static/js/util.js"></script>
-<script src="static/js/main.js"></script>
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/util.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 
 </html>

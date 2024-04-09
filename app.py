@@ -12,53 +12,54 @@ USER_CREDENTIALS = {
 # def index():
 #     return render_template('index.html')
 
-@app.route('/')
+
+# @app.route('/signup', methods=['POST'])
+# def signup():
+#     # Process form submission here
+#     # Example: Access form data and perform backend tasks
+#     fn = request.form['fn']
+#     ln = request.form['ln']
+#     age = request.form['age']
+#     email = request.form['email']
+#     password = request.form['password']
+#     cpass = request.form['cpass']
+#     affiliation = request.form['affiliation']
+#     country = request.form['country']
+
+#     # Example: Print form data (you can replace this with your actual backend logic)
+#     print(f'First Name: {fn}')
+#     print(f'Last Name: {ln}')
+#     print(f'Age: {age}')
+#     print(f'Email: {email}')
+#     print(f'Password: {password}')
+#     print(f'Confirm Password: {cpass}')
+#     print(f'Affiliation: {affiliation}')
+#     print(f'Country: {country}')
+
+#     # Redirect to home page after successful sign-up
+#     return redirect('/')
+
+# @app.route('/signin', methods=['POST'])
+# def signin():
+#     # Get form data
+#     email = request.form['email']
+#     password = request.form['password']
+
+#     # Check if credentials match
+#     if email == USER_CREDENTIALS['email'] and password == USER_CREDENTIALS['password']:
+#         # Redirect to home page after successful sign-in
+#         return redirect('/homeindex')
+#     else:
+#         # If credentials don't match, redirect back to sign-in page with an error message
+#         return render_template('signin.html', error='Invalid email or password')
+
+@app.route('/signup')
 def signupindex():
     return render_template('signup.html')
-
-@app.route('/signup', methods=['POST'])
-def signup():
-    # Process form submission here
-    # Example: Access form data and perform backend tasks
-    fn = request.form['fn']
-    ln = request.form['ln']
-    age = request.form['age']
-    email = request.form['email']
-    password = request.form['password']
-    cpass = request.form['cpass']
-    affiliation = request.form['affiliation']
-    country = request.form['country']
-
-    # Example: Print form data (you can replace this with your actual backend logic)
-    print(f'First Name: {fn}')
-    print(f'Last Name: {ln}')
-    print(f'Age: {age}')
-    print(f'Email: {email}')
-    print(f'Password: {password}')
-    print(f'Confirm Password: {cpass}')
-    print(f'Affiliation: {affiliation}')
-    print(f'Country: {country}')
-
-    # Redirect to home page after successful sign-up
-    return redirect('/')
 
 @app.route('/signinindex')
 def signinindex():
     return render_template('signin.html')
-
-@app.route('/signin', methods=['POST'])
-def signin():
-    # Get form data
-    email = request.form['email']
-    password = request.form['password']
-
-    # Check if credentials match
-    if email == USER_CREDENTIALS['email'] and password == USER_CREDENTIALS['password']:
-        # Redirect to home page after successful sign-in
-        return redirect('/homeindex')
-    else:
-        # If credentials don't match, redirect back to sign-in page with an error message
-        return render_template('signin.html', error='Invalid email or password')
 
 @app.route('/homeindex')
 def homeindex():
@@ -104,6 +105,10 @@ def project():
 @app.route('/reports')
 def reports():
     return render_template('reports.html')
+
+@app.route('/messages')
+def messages():
+    return render_template('messages.html')
 
 
 if __name__ == '__main__':
