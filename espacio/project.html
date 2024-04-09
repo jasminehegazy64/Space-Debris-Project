@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>ESPACIO</title>
+    <meta charset="utf-8">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+
+<body class="subpage">
+
+    <!-- Header -->
+    <header id="header">
+        <div class="inner">
+			<a href="index.html" class="logo"><img src="images/logo.png" alt="logo" width="45" height="43"></a>
+            <nav id="nav"><a href="index.html">Home</a>
+                <a href="document.html">Documentation</a>
+                <a href="contactus.html">Contact Us</a>
+                <a href="aboutus.html">About Us</a>
+                <a href="reports.html">Reports</a>
+                <a href="account.html">Account</a>
+                <a href="signin.html">Sign In</a>
+                <a href="signup.html">Sign Up</a>
+                <a href="project.html">Project</a>
+                <a href="admindashboard.html">Admin Dashboard</a>
+
+
+            </nav><a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+        </div>
+    </header><!-- Banner -->
+    <section id="banner">
+        <h1>Create a New Project</h1>
+    </section>
+    <section id="main" class="wrapper">
+        <div class="inner">
+
+            <!-- Form -->
+            <form method="post" action="#">
+                <center>
+                    <div class="row uniform">
+                        <div class="6u 12u$(xsmall)">
+                            <input type="text" name="projname" id="projname" value="" placeholder="Project Name">
+                        </div>
+                        <div class="6u$ 12u$(xsmall)">
+                            <input type="text" name="source" id="source" value="" placeholder="Source of the Dataset">
+                        </div>
+                        <!-- Break -->
+                        <div class=" 12u$(small)">
+                            <input type="checkbox" id="detect" name="detect"><label for="detect">Detection</label>
+                        </div>
+                        <div class="12u$(small)">
+                            <input type="checkbox" id="track" name="track" checked><label for="track">Tracking</label>
+                        </div>
+                        <div class=" 12u$(small)">
+                            <input type="checkbox" id="collision" name="collision" checked><label
+                                for="collision">Collision
+                                Prediction</label>
+                        </div>
+                       
+                        <!-- Break -->
+                        <div class="12u$">
+                            Dataset : <input type="file" name="dataset" id="dataset"
+                                placeholder="Enter your message"></input>
+                        </div>
+                        <!-- Break -->
+                        <div class="12u$">
+                            <ul class="actions">
+                                <li><input type="submit" value="GO!"></li>
+                                <li><input type="reset" value="Reset" class="alt"></li>
+                            </ul>
+                        </div>
+                    </div>
+            </form>
+            </center>
+        </div>
+    </section>
+<!-- Footer -->
+<footer id="footer">
+    <div class="inner">
+        <div class="flex">
+            <ul class="icons">
+                <li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+                <li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+                <li><a href="#" class="icon fa-linkedin"><span class="label">linkedIn</span></a></li>
+                <li><a href="#" class="icon fa-pinterest-p"><span class="label">Pinterest</span></a></li>
+                <li><a href="#" class="icon fa-vimeo"><span class="label">Vimeo</span></a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+<div class="copyright">
+    ESPACIO : Detecting, Tracking, and Collision Prediction of Space Debris
+</div>
+
+<!-- Scripts -->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/skel.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+
+</html>
