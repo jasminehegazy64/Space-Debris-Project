@@ -8,9 +8,9 @@ USER_CREDENTIALS = {
     'password': '12345'
 }
 
-# @app.route('/')
-# def index():
-#     return render_template('index.html')
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 # @app.route('/signup', methods=['POST'])
 # def signup():
