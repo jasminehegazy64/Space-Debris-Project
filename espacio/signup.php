@@ -80,7 +80,7 @@
                             <br><br>
                             Already have an account?
                             <br>
-                            <li><a href="signin.html"><input type="button" value="Sign In" class="alt"></a></li>
+                            <li><a href="login.php"><input type="button" value="Sign In" class="alt"></a></li>
 
                         </ul>
                     </div>

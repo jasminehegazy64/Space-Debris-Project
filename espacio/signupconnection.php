@@ -34,7 +34,7 @@ if ($_POST["password"] !== $_POST["cpass"]) {
 
 $password_hash = password_hash($_POST["password"], PASSWORD_DEFAULT);
 
-$mysqli = require __DIR__ . "/Mysqlconnection.php";
+require __DIR__ . "/Mysqlconnection.php";
 
 $sql = "INSERT INTO account_info (first_name, last_name,age, email, acc_password)
         VALUES (?, ?, ?, ?, ?)";
