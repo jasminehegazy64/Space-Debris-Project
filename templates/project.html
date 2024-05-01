@@ -14,9 +14,9 @@
      <!-- Header -->
      <header id="header">
         <div class="inner">
-			<a href="{{ url_for('homeindex') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43"></a>
-            <nav id="nav"><a href="{{ url_for('homeindex') }}">Home</a>
-                <a href="{{ url_for('document') }}">Documentation</a>
+			<a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43"></a>
+            <nav id="nav"><a href="{{ url_for('index') }}">Home</a>
+                <a href="{{ url_for('documentation') }}">Documentation</a>
                 <a href="{{ url_for('contactus') }}">Contact Us</a>
                 <a href="{{ url_for('aboutus') }}">About Us</a>
                 <a href="{{ url_for('reports') }}">Reports</a>
@@ -33,7 +33,7 @@
         <div class="inner">
 
             <!-- Form -->
-            <form method="post" action="#">
+            <form method="post" action="#" enctype="multipart/form-data">
                 <center>
                     <div class="row uniform">
                         <div class="6u 12u$(xsmall)">
@@ -57,8 +57,8 @@
                        
                         <!-- Break -->
                         <div class="12u$">
-                            Dataset : <input type="file" name="dataset" id="dataset"
-                                placeholder="Enter your message"></input>
+                            Dataset : <input type="file" name="dataset" id="dataset" accept=".fits" required webkitdirectory multiple required
+                                ></input>
                         </div>
                         <!-- Break -->
                         <div class="12u$">
