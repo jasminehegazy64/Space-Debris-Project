@@ -1,8 +1,11 @@
-from flask import Flask, render_template, request, send_file, redirect, flash , url_for
+from flask import Flask, render_template, request, redirect, flash, session, url_for
 from werkzeug.utils import secure_filename
 import os
-from Image_processing import convert_fits_to_image
 from flask_sqlalchemy import SQLAlchemy
+import base64
+import uuid
+from uuid import uuid4
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
@@ -12,12 +15,23 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+# Define your AccountInfo model
+class AccountInfo(db.Model):
+    acc_id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(50))
+    last_name = db.Column(db.String(50))
+    age = db.Column(db.Integer)
+    username = db.Column(db.String(10), unique=True, nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    acc_password = db.Column(db.String(250), nullable=False)
+
 # Define your Project model
 class Project(db.Model):
-    project_id = db.Column(db.Integer, primary_key=True)
+    project_id = db.Column(db.String(36), primary_key=True, default=str(uuid.uuid4()))
     projectname = db.Column(db.String(255))
     source = db.Column(db.String(255))
-    files = db.Column(db.String(255))
+    files = db.Column(db.LargeBinary)
+    acc_id = db.Column(db.Integer, db.ForeignKey('account_info.acc_id'))
 
 # Set the secret key for session management and flashing messages
 app.secret_key = '0'
@@ -26,12 +40,39 @@ app.secret_key = '0'
 def index():
     return render_template('index.html')
 
-@app.route('/signin')
+@app.route('/signin', methods=['GET', 'POST'])
 def signin():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        user = AccountInfo.query.filter_by(email=email).first()
+        if user and check_password_hash(user.acc_password, password):
+            session['acc_id'] = user.acc_id
+            flash('Logged in successfully!', 'success')
+            return redirect(url_for('project'))
+        else:
+            flash('Invalid username or password. Please try again.', 'error')
     return render_template('signin.html')
 
-@app.route('/signup')
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
+    if request.method == 'POST':
+        first_name = request.form['fn']
+        last_name = request.form['ln']
+        age = request.form['age']
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+
+        hashed_password = generate_password_hash(password)
+
+        new_user = AccountInfo(first_name=first_name, last_name=last_name, age=age,
+                               username=username, email=email, acc_password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash('Your account has been created! You can now sign in.', 'success')
+        return redirect(url_for('signin'))
     return render_template('signup.html')
 
 @app.route('/document')
@@ -86,26 +127,41 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 @app.route('/project', methods=['GET', 'POST'])
 def project():
     if request.method == 'POST':
+        if 'acc_id' in session:  # Check if user is logged in
             projname = request.form['projname']
             source = request.form['source']
-            files = request.files['dataset']
+            files = request.files.getlist('dataset')  # Use getlist for multiple files
+            
+            # Retrieve acc_id for logged-in user from session
+            acc_id = session['acc_id']
+            
+            # Create a list to store file contents
+            encoded_files = []
 
-            # Save dataset file to disk
-            filename = secure_filename(files.filename)
-            files.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            # Iterate over uploaded files and read their content
+            for file in files:
+                # Read file content and encode as base64
+                encoded_file_content = base64.b64encode(file.read())
+                encoded_files.append(encoded_file_content)
+            
+            # Join encoded file contents with a delimiter
+            # You can use any delimiter that suits your needs
+            # Here, I'm using a newline character '\n'
+            combined_files = b'\n'.join(encoded_files)
 
             # Insert project data into the database
-            new_project = Project(projectname=projname, source=source, files=filename)
+            new_project = Project(project_id=str(uuid4()), projectname=projname, source=source, files=combined_files, acc_id=acc_id)
             db.session.add(new_project)
             db.session.commit()
 
-            # Process the uploaded dataset (optional)
-
-            # Return success message or redirect to another page
+            # Flash success message
             flash('Project created successfully', 'success')
             return redirect(url_for('allreports'))
+        else:
+            flash('Please log in to create a project', 'error')
+            return redirect(url_for('signin'))  # Redirect to login page if user is not logged in
     else:
-            return render_template('project.html')
+        return render_template('project.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

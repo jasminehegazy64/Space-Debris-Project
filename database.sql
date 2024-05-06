@@ -8,6 +8,5 @@ CREATE TABLE account_info (
   username varchar(10) DEFAULT NULL,
   email varchar(100) NOT NULL,
   acc_password varchar(50) NOT NULL,
-  confirm_pass varchar(10) DEFAULT NULL,
   PRIMARY KEY (acc_id)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
