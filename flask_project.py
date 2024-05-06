@@ -1,9 +1,23 @@
-from flask import Flask, render_template, request, send_file, redirect, flash
+from flask import Flask, render_template, request, send_file, redirect, flash , url_for
 from werkzeug.utils import secure_filename
 import os
 from Image_processing import convert_fits_to_image
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+
+# MySQL Configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Happylola.123@localhost/espacio'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+# Define your Project model
+class Project(db.Model):
+    project_id = db.Column(db.Integer, primary_key=True)
+    projectname = db.Column(db.String(255))
+    source = db.Column(db.String(255))
+    files = db.Column(db.String(255))
 
 # Set the secret key for session management and flashing messages
 app.secret_key = '0'
@@ -60,26 +74,38 @@ def reports():
 def messages():
     return render_template('messages.html')
 
+# Define the upload folder path
+UPLOAD_FOLDER = 'uploads'
+
+# Set the upload folder configuration
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Ensure the upload folder exists
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 @app.route('/project', methods=['GET', 'POST'])
 def project():
     if request.method == 'POST':
-        # Handle POST request
-        projname = request.form['projname']
-        dataset = request.files['dataset']
+            projname = request.form['projname']
+            source = request.form['source']
+            files = request.files['dataset']
 
-        # Save dataset file to disk (optional)
-        dataset.save('uploaded_dataset.fits')
+            # Save dataset file to disk
+            filename = secure_filename(files.filename)
+            files.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-        #  Process the uploaded dataset
-        output_image_filename = 'processed_image.png'
-        convert_fits_to_image('uploaded_dataset.fits', output_image_filename)
+            # Insert project data into the database
+            new_project = Project(projectname=projname, source=source, files=filename)
+            db.session.add(new_project)
+            db.session.commit()
 
-        # Return the processed image file to the client
-        return send_file(output_image_filename, mimetype='image/png')
+            # Process the uploaded dataset (optional)
+
+            # Return success message or redirect to another page
+            flash('Project created successfully', 'success')
+            return redirect(url_for('allreports'))
     else:
-        # Handle GET request
-        return render_template('project.html')
+            return render_template('project.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
