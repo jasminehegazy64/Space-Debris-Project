@@ -7,14 +7,28 @@
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <script>
+        function validateFile() {
+            var fileInput = document.getElementById('dataset');
+            var filePath = fileInput.value;
+            var allowedExtensions = /(\.fits)$/i;
+            if (!allowedExtensions.exec(filePath)) {
+                alert('Invalid file type! Please upload files with .fits extension only.');
+                fileInput.value = '';
+                return false;
+            }
+            return true;
+        }
+    </script>
 </head>
 
 <body class="subpage">
 
-     <!-- Header -->
-     <header id="header">
+    <!-- Header -->
+    <header id="header">
         <div class="inner">
-			<a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43"></a>
+            <a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}"
+                    alt="logo" width="45" height="43"></a>
             <nav id="nav"><a href="{{ url_for('index') }}">Home</a>
                 <a href="{{ url_for('documentation') }}">Documentation</a>
                 <a href="{{ url_for('contactus') }}">Contact Us</a>
@@ -33,7 +47,7 @@
         <div class="inner">
 
             <!-- Form -->
-            <form method="post" action="#" enctype="multipart/form-data">
+            <form method="post" action="#" enctype="multipart/form-data" onsubmit="return validateFile()">
                 <center>
                     <div class="row uniform">
                         <div class="6u 12u$(xsmall)">
@@ -54,11 +68,11 @@
                                 for="collision">Collision
                                 Prediction</label>
                         </div>
-                       
+
                         <!-- Break -->
                         <div class="12u$">
-                            Dataset : <input type="file" name="dataset" id="dataset" accept=".fits" required webkitdirectory multiple required
-                                ></input>
+                            Dataset : <input type="file" name="dataset" id="dataset" accept=".fits" webkitdirectory
+                                multiple required></input>
                         </div>
                         <!-- Break -->
                         <div class="12u$">
@@ -72,29 +86,29 @@
             </center>
         </div>
     </section>
-<!-- Footer -->
-<footer id="footer">
-    <div class="inner">
-        <div class="flex">
-            <ul class="icons">
-                <li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
-                <li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
-                <li><a href="#" class="icon fa-linkedin"><span class="label">linkedIn</span></a></li>
-                <li><a href="#" class="icon fa-pinterest-p"><span class="label">Pinterest</span></a></li>
-                <li><a href="#" class="icon fa-vimeo"><span class="label">Vimeo</span></a></li>
-            </ul>
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <div class="flex">
+                <ul class="icons">
+                    <li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+                    <li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+                    <li><a href="#" class="icon fa-linkedin"><span class="label">linkedIn</span></a></li>
+                    <li><a href="#" class="icon fa-pinterest-p"><span class="label">Pinterest</span></a></li>
+                    <li><a href="#" class="icon fa-vimeo"><span class="label">Vimeo</span></a></li>
+                </ul>
+            </div>
         </div>
+    </footer>
+    <div class="copyright">
+        ESPACIO : Detecting, Tracking, and Collision Prediction of Space Debris
     </div>
-</footer>
-<div class="copyright">
-    ESPACIO : Detecting, Tracking, and Collision Prediction of Space Debris
-</div>
 
-<!-- Scripts -->
-<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/util.js') }}"></script>
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/util.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 </body>
 
