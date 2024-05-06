@@ -48,12 +48,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <a href="document.html">Documentation</a>
                 <a href="contactus.html">Contact Us</a>
                 <a href="aboutus.html">About Us</a>
-                <a href="reports.html">Reports</a>
-                <a href="account.html">Account</a>
+                <!-- <a href="reports.html">Reports</a> -->
+                <!-- <a href="account.html">Account</a> -->
                 <a href="login.php">Sign In</a>
-                <a href="signup.html">Sign Up</a>
-                <a href="project.html">Project</a>
-                <a href="admindashboard.html">Admin Dashboard</a>
+                <a href="signup.php">Sign Up</a>
+                <!-- <a href="project.html">Project</a> -->
+                <!-- <a href="admindashboard.html">Admin Dashboard</a> -->
             </nav>
             <a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
         </div>
