@@ -4,6 +4,8 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 import base64
 import uuid
+import io
+import zipfile
 from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -109,7 +111,16 @@ def fullreport():
 
 @app.route('/reports')
 def reports():
-    return render_template('reports.html')
+    if 'acc_id' in session:
+        # Fetch projects associated with the logged-in user
+        acc_id = session['acc_id']
+        projects = Project.query.filter_by(acc_id=acc_id).all()
+        return render_template('reports.html', projects=projects)
+    else:
+        # If no user is logged in, redirect to the login page
+        flash('Please log in to view reports', 'error')
+        return redirect(url_for('signin'))
+
 
 @app.route('/messages')
 def messages():
@@ -134,29 +145,29 @@ def project():
             
             # Retrieve acc_id for logged-in user from session
             acc_id = session['acc_id']
-            
-            # Create a list to store file contents
-            encoded_files = []
 
-            # Iterate over uploaded files and read their content
-            for file in files:
-                # Read file content and encode as base64
-                encoded_file_content = base64.b64encode(file.read())
-                encoded_files.append(encoded_file_content)
-            
-            # Join encoded file contents with a delimiter
-            # You can use any delimiter that suits your needs
-            # Here, I'm using a newline character '\n'
-            combined_files = b'\n'.join(encoded_files)
+            # Create a BytesIO object to store the ZIP file contents
+            zip_buffer = io.BytesIO()
 
+            # Create a ZIP file
+            with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
+                # Iterate over uploaded files and add them to the ZIP file
+                for file in files:
+                    file_content = file.read()
+                    file_name = secure_filename(file.filename)
+                    zip_file.writestr(file_name, file_content)
+
+            # Get the content of the ZIP file
+            zip_contents = zip_buffer.getvalue()
+            
             # Insert project data into the database
-            new_project = Project(project_id=str(uuid4()), projectname=projname, source=source, files=combined_files, acc_id=acc_id)
+            new_project = Project(project_id=str(uuid4()), projectname=projname, source=source, files=zip_contents, acc_id=acc_id)
             db.session.add(new_project)
             db.session.commit()
-
+            
             # Flash success message
             flash('Project created successfully', 'success')
-            return redirect(url_for('allreports'))
+            return redirect(url_for('reports'))
         else:
             flash('Please log in to create a project', 'error')
             return redirect(url_for('signin'))  # Redirect to login page if user is not logged in

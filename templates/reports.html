@@ -36,9 +36,9 @@
      <!-- Header -->
      <header id="header">
         <div class="inner">
-			<a href="{{ url_for('homeindex') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43"></a>
-            <nav id="nav"><a href="{{ url_for('homeindex') }}">Home</a>
-                <a href="{{ url_for('document') }}">Documentation</a>
+			<a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43"></a>
+            <nav id="nav"><a href="{{ url_for('index') }}">Home</a>
+                <a href="{{ url_for('documentation') }}">Documentation</a>
                 <a href="{{ url_for('contactus') }}">Contact Us</a>
                 <a href="{{ url_for('aboutus') }}">About Us</a>
                 <a href="{{ url_for('reports') }}">Reports</a>
@@ -64,30 +64,14 @@
                     <th>Reports</th>
                     <th>Full Report</th>
                 </tr>
+                {% for project in projects %}
                 <tr>
-                    <td>Trial 1</td>
-                    <td>20/1/2024</td>
-                    <td>Trial1-Report.pdf</td>
-                    <td><a href="{{ url_for('fullreport') }}"><input type="button" value="Full Report"></a></td>
+                    <td>{{ project.projectname }}</td>
+                    <td>{{ project.date }}</td>
+                    <td>{{ project.report_filename }}</td>
+                    <td><a href="{{ url_for('fullreport', project_id=project.project_id) }}"><input type="button" value="Full Report"></a></td>
                 </tr>
-                <tr>
-                    <td>Trial 2</td>
-                    <td>27/1/2024</td>
-                    <td>Trial2-Report.pdf</td>
-                    <td><a href="{{ url_for('fullreport') }}"><input type="button" value="Full Report"></a></td>
-                </tr>
-                <tr>
-                    <td>DetectingDebris</td>
-                    <td>5/2/2024</td>
-                    <td>DetectingDebris-Report.pdf</td>
-                    <td><a href="{{ url_for('fullreport') }}"><input type="button" value="Full Report"></a></td>
-                </tr>
-                <tr>
-                    <td>TrackingDebris</td>
-                    <td>9/2/2024</td>
-                    <td>TrackingDebris-Report.pdf</td>
-                    <td><a href="{{ url_for('fullreport') }}"><input type="button" value="Full Report"></a></td>
-                </tr>
+                {% endfor %}
             </table>
         </div>
 

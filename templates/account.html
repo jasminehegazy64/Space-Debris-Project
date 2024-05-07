@@ -14,9 +14,9 @@
     <!-- Header -->
     <header id="header">
         <div class="inner">
-			<a href="{{ url_for('homeindex') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43"></a>
-            <nav id="nav"><a href="{{ url_for('homeindex') }}">Home</a>
-                <a href="{{ url_for('document') }}">Documentation</a>
+			<a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43"></a>
+            <nav id="nav"><a href="{{ url_for('index') }}">Home</a>
+                <a href="{{ url_for('documentation') }}">Documentation</a>
                 <a href="{{ url_for('contactus') }}">Contact Us</a>
                 <a href="{{ url_for('aboutus') }}">About Us</a>
                 <a href="{{ url_for('reports') }}">Reports</a>
@@ -65,7 +65,7 @@
                         <div class="12u$">
                             <center>
                                 <ul class="actions">
-                                    <li><a href="{{ url_for('signinindex') }}"><input type="button" value="Sign Out" class="alt"></a></li>
+                                    <li><a href="{{ url_for('signin') }}"><input type="button" value="Sign Out" class="alt"></a></li>
                                 </ul>
                             </center>
                         </div>
