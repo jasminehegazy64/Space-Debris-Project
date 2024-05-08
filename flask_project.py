@@ -6,6 +6,7 @@ import base64
 import uuid
 import io
 import zipfile
+import threading
 from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -126,15 +127,8 @@ def reports():
 def messages():
     return render_template('messages.html')
 
-# Define the upload folder path
-UPLOAD_FOLDER = 'uploads'
-
-# Set the upload folder configuration
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-# Ensure the upload folder exists
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-
+# def process_files_async(files, projname, source, acc_id):
+    
 @app.route('/project', methods=['GET', 'POST'])
 def project():
     if request.method == 'POST':
@@ -142,29 +136,38 @@ def project():
             projname = request.form['projname']
             source = request.form['source']
             files = request.files.getlist('dataset')  # Use getlist for multiple files
-            
-            # Retrieve acc_id for logged-in user from session
             acc_id = session['acc_id']
-
-            # Create a BytesIO object to store the ZIP file contents
+            # Function to process files asynchronously
             zip_buffer = io.BytesIO()
-
-            # Create a ZIP file
+            
             with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
-                # Iterate over uploaded files and add them to the ZIP file
                 for file in files:
                     file_content = file.read()
                     file_name = secure_filename(file.filename)
                     zip_file.writestr(file_name, file_content)
 
-            # Get the content of the ZIP file
             zip_contents = zip_buffer.getvalue()
             
-            # Insert project data into the database
             new_project = Project(project_id=str(uuid4()), projectname=projname, source=source, files=zip_contents, acc_id=acc_id)
             db.session.add(new_project)
             db.session.commit()
+
+            # Execute functions based on checked checkboxes
+            if 'detect' in request.form:
+                # Execute detection-related function
+                # Example: detect_function()
+                pass
             
+            if 'track' in request.form:
+                # Execute tracking-related function
+                # Example: track_function()
+                pass
+            
+            if 'collision' in request.form:
+                # Execute collision prediction-related function
+                # Example: collision_function()
+                pass
+
             # Flash success message
             flash('Project created successfully', 'success')
             return redirect(url_for('reports'))
@@ -173,6 +176,5 @@ def project():
             return redirect(url_for('signin'))  # Redirect to login page if user is not logged in
     else:
         return render_template('project.html')
-
 if __name__ == '__main__':
     app.run(debug=True)
