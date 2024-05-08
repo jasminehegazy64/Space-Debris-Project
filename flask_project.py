@@ -9,6 +9,8 @@ import zipfile
 import threading
 from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
+from OOP.Detection.Classification import DebrisAnalyzer  
+
 
 app = Flask(__name__)
 
@@ -34,6 +36,7 @@ class Project(db.Model):
     projectname = db.Column(db.String(255))
     source = db.Column(db.String(255))
     files = db.Column(db.LargeBinary)
+    detection = db.Column(db.LargeBinary)
     acc_id = db.Column(db.Integer, db.ForeignKey('account_info.acc_id'))
 
 # Set the secret key for session management and flashing messages
@@ -152,12 +155,38 @@ def project():
             db.session.add(new_project)
             db.session.commit()
 
-            # Execute functions based on checked checkboxes
-            if 'detect' in request.form:
-                # Execute detection-related function
-                # Example: detect_function()
-                pass
+            # Prepare a temporary directory for processing files
+            temp_dir = 'temp'
+            os.makedirs(temp_dir, exist_ok=True)
             
+            # Save the uploaded FITS files to the temporary directory
+            fits_paths = []
+            for file in files:
+                if file.filename.endswith('.fits'):
+                    fits_path = os.path.join(temp_dir, secure_filename(file.filename))
+                    file.save(fits_path)
+                    fits_paths.append(fits_path)
+            
+            if not fits_paths:
+                flash('Please upload at least one FITS file', 'error')
+                return redirect(url_for('project'))
+
+            # Create a CSV file path for the DebrisAnalyzer
+            csv_file_path = os.path.join(temp_dir, 'output.csv')
+            
+            # Instantiate DebrisAnalyzer and process the images
+            debris_analyzer = DebrisAnalyzer(temp_dir, csv_file_path)
+            debris_analyzer.process_images()
+            
+            # Read the CSV file content
+            with open(csv_file_path, 'rb') as csv_file:
+                csv_content = csv_file.read()
+            
+            # Save the CSV file content to the database
+            new_project = Project(project_id=str(uuid4()), projectname=projname, source=source, detection=csv_content, acc_id=acc_id)
+            db.session.add(new_project)
+            db.session.commit()
+
             if 'track' in request.form:
                 # Execute tracking-related function
                 # Example: track_function()
@@ -170,6 +199,13 @@ def project():
 
             # Flash success message
             flash('Project created successfully', 'success')
+            
+            # Clean up temporary files and directory
+            for fits_path in fits_paths:
+                os.remove(fits_path)
+            os.remove(csv_file_path)
+            os.rmdir(temp_dir)
+
             return redirect(url_for('reports'))
         else:
             flash('Please log in to create a project', 'error')

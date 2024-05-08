@@ -3,8 +3,8 @@ import cv2
 import numpy as np
 import csv
 from skimage import feature
-from conversion import convert_fits_to_image
-from images_Preprocessing.iterative_Threshholding import iterative_thresholding
+from OOP.conversion import convert_fits_to_image
+from OOP.images_Preprocessing.iterative_Threshholding import iterative_thresholding
 
 class DebrisAnalyzer:
     def __init__(self, threshed_directory, csv_file_path):
@@ -45,16 +45,16 @@ class DebrisAnalyzer:
 
                 # Output PNG filename (assuming the same name with a different extension)
                 output_image_filename = os.path.join(self.threshed_directory, os.path.splitext(fits_filename)[0] + '.png')
-                #convert_fits_to_image(full_path_fits, output_image_filename)
+                convert_fits_to_image(full_path_fits, output_image_filename)
 
                 image = cv2.imread(output_image_filename)
                 img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-                # # Apply the iterative thresholding algorithm to the image
-                # optimal_threshold = self.iterative_thresholding(img)
+                # Apply the iterative thresholding algorithm to the image
+                optimal_threshold = self.iterative_thresholding(img)
 
-                # # Threshold the image using the optimal threshold
-                # thresholded_img = (img >= optimal_threshold).astype(np.uint8) * 255
+                # Threshold the image using the optimal threshold
+                thresholded_img = (img >= optimal_threshold).astype(np.uint8) * 255
 
                 num_labels_iterative, labels_iterative, stats_iterative, centroids_iterative = cv2.connectedComponentsWithStats(
                     img, connectivity=8)
@@ -72,6 +72,7 @@ class DebrisAnalyzer:
 
                     # Get the coordinates of the bounding box for the current object
                     x, y, w, h, area = stats_iterative[label]
+
                     # Count the number of edges in the component
                     edge_count = np.count_nonzero(edges_in_component)
 
