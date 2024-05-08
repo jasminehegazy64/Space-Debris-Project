@@ -3,8 +3,8 @@ import cv2
 import numpy as np
 import csv
 from skimage import feature
-from OOP.conversion import convert_fits_to_image
-from OOP.images_Preprocessing.iterative_Threshholding import iterative_thresholding
+from conversion import convert_fits_to_image
+from images_Preprocessing.iterative_Threshholding import iterative_thresholding
 
 class DebrisAnalyzer:
     def __init__(self, threshed_directory, csv_file_path):
@@ -101,3 +101,9 @@ class DebrisAnalyzer:
 
                     # Write the row to the CSV file
                     csvwriter.writerow([fits_filename, object_id - 1, area_iterative, edge_count, center_x, center_y, w, h, lbp_mean, lbp_std, prediction])
+# Example usage
+if __name__ == "__main__":
+    # Instantiate DebrisAnalyzer
+    analyzer = DebrisAnalyzer(threshed_directory="your_threshed_directory", csv_file_path="output.csv")
+    # Process images
+    analyzer.process_images()

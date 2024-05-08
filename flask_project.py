@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, flash, session, url_for
+from flask import send_file, make_response
 from werkzeug.utils import secure_filename
 import os
 from flask_sqlalchemy import SQLAlchemy
@@ -6,6 +7,8 @@ import base64
 import uuid
 import io
 import zipfile
+import tempfile
+from zipfile import ZipFile
 import threading
 from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -131,7 +134,42 @@ def messages():
     return render_template('messages.html')
 
 # def process_files_async(files, projname, source, acc_id):
-    
+# Function to process files asynchronously
+            # zip_buffer = io.BytesIO()
+            
+            # with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
+            #     for file in files:
+            #         file_content = file.read()
+            #         file_name = secure_filename(file.filename)
+            #         zip_file.writestr(file_name, file_content)
+
+            # zip_contents = zip_buffer.getvalue()
+            
+            # new_project = Project(project_id=str(uuid4()), projectname=projname, source=source, files=zip_contents, acc_id=acc_id)
+            # db.session.add(new_project)
+            # db.session.commit()
+
+
+
+
+
+
+@app.route('/view_csv/<project_id>')
+def view_csv(project_id):
+    # Fetch the project by its ID
+    project = Project.query.get(project_id)
+    if project:
+        # Create a response containing the CSV file content
+        response = make_response(project.detection)
+        # Set the Content-Disposition header to specify the filename
+        response.headers['Content-Disposition'] = f'attachment; filename=output.csv'
+        # Set the content type
+        response.headers['Content-Type'] = 'text/csv'
+        return response
+    else:
+        flash('Project not found', 'error')
+        return redirect(url_for('reports'))
+
 @app.route('/project', methods=['GET', 'POST'])
 def project():
     if request.method == 'POST':
@@ -140,71 +178,32 @@ def project():
             source = request.form['source']
             files = request.files.getlist('dataset')  # Use getlist for multiple files
             acc_id = session['acc_id']
-            # Function to process files asynchronously
-            zip_buffer = io.BytesIO()
-            
-            with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
-                for file in files:
-                    file_content = file.read()
-                    file_name = secure_filename(file.filename)
-                    zip_file.writestr(file_name, file_content)
-
-            zip_contents = zip_buffer.getvalue()
-            
-            new_project = Project(project_id=str(uuid4()), projectname=projname, source=source, files=zip_contents, acc_id=acc_id)
-            db.session.add(new_project)
-            db.session.commit()
 
             # Prepare a temporary directory for processing files
-            temp_dir = 'temp'
-            os.makedirs(temp_dir, exist_ok=True)
-            
-            # Save the uploaded FITS files to the temporary directory
-            fits_paths = []
-            for file in files:
-                if file.filename.endswith('.fits'):
-                    fits_path = os.path.join(temp_dir, secure_filename(file.filename))
-                    file.save(fits_path)
-                    fits_paths.append(fits_path)
-            
-            if not fits_paths:
-                flash('Please upload at least one FITS file', 'error')
-                return redirect(url_for('project'))
+            threshed_directory = 'threshed_directoryy'
+            os.makedirs(threshed_directory, exist_ok=True)
 
             # Create a CSV file path for the DebrisAnalyzer
-            csv_file_path = os.path.join(temp_dir, 'output.csv')
-            
+            csv_file_path = os.path.join(threshed_directory, 'output.csv')
+
             # Instantiate DebrisAnalyzer and process the images
-            debris_analyzer = DebrisAnalyzer(temp_dir, csv_file_path)
-            debris_analyzer.process_images()
-            
-            # Read the CSV file content
+            debris_analyzer = DebrisAnalyzer(threshed_directory, csv_file_path)
+            debris_analyzer.process_images() 
+
+           # Read the CSV file content
             with open(csv_file_path, 'rb') as csv_file:
                 csv_content = csv_file.read()
-            
+
             # Save the CSV file content to the database
             new_project = Project(project_id=str(uuid4()), projectname=projname, source=source, detection=csv_content, acc_id=acc_id)
             db.session.add(new_project)
             db.session.commit()
-
-            if 'track' in request.form:
-                # Execute tracking-related function
-                # Example: track_function()
-                pass
-            
-            if 'collision' in request.form:
-                # Execute collision prediction-related function
-                # Example: collision_function()
-                pass
-
+          
             # Flash success message
             flash('Project created successfully', 'success')
-            
             # Clean up temporary files and directory
-            for fits_path in fits_paths:
-                os.remove(fits_path)
             os.remove(csv_file_path)
-            os.rmdir(temp_dir)
+            os.rmdir(threshed_directory)
 
             return redirect(url_for('reports'))
         else:
@@ -212,5 +211,7 @@ def project():
             return redirect(url_for('signin'))  # Redirect to login page if user is not logged in
     else:
         return render_template('project.html')
+
+
 if __name__ == '__main__':
     app.run(debug=True)
