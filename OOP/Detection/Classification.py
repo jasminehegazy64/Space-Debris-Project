@@ -51,7 +51,7 @@ class DebrisAnalyzer:
                 img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
                 # Apply the iterative thresholding algorithm to the image
-                optimal_threshold = self.iterative_thresholding(img)
+                thresholded_img, optimal_threshold = iterative_thresholding(img)
 
                 # Threshold the image using the optimal threshold
                 thresholded_img = (img >= optimal_threshold).astype(np.uint8) * 255
@@ -101,9 +101,11 @@ class DebrisAnalyzer:
 
                     # Write the row to the CSV file
                     csvwriter.writerow([fits_filename, object_id - 1, area_iterative, edge_count, center_x, center_y, w, h, lbp_mean, lbp_std, prediction])
-# Example usage
-if __name__ == "__main__":
-    # Instantiate DebrisAnalyzer
-    analyzer = DebrisAnalyzer(threshed_directory="your_threshed_directory", csv_file_path="output.csv")
-    # Process images
-    analyzer.process_images()
+# # Example usage
+# if __name__ == "__main__":
+#     # Instantiate DebrisAnalyzer
+#     analyzer = DebrisAnalyzer(threshed_directory="OOP\\2024-001", csv_file_path="output.csv")
+#     # Debugging: Print out the path
+#     print("Threshed directory:", analyzer.threshed_directory)
+#     # Process images
+#     analyzer.process_images()
