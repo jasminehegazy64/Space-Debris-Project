@@ -19,11 +19,11 @@ images_directory="OOP\\2024-001-images"
 convert_fits_to_image(fits_directory,images_directory)
 
 #otsu threshing 
-otsu_images=r"C:\Users\USER\Desktop\Space-Debris-Project\OOP\Detection\images_Preprocessing\otsu_images"
+otsu_images="OOP\\Detection\\images_Preprocessing\\otsu_images"
 otsu_thresholding_folder(images_directory,otsu_images)
 
 #iterative threshing 
-iterat_images=r"C:\Users\USER\Desktop\Space-Debris-Project\OOP\Detection\images_Preprocessing\iter_images"
+iterat_images="OOP\\Detection\\images_Preprocessing\\iter_images"
 iterative_thresholding_folder(images_directory,iterat_images)
 
 #detect and label the object in the images
