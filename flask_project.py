@@ -186,6 +186,13 @@ def project():
             # Create a CSV file path for the DebrisAnalyzer
             csv_file_path = os.path.join(threshed_directory, 'output.csv')
 
+            convert_fits_to_image(fits_directory,images_directory)
+            otsu_thresholding_folder(images_directory,otsu_images)
+            iterative_thresholding_folder(images_directory,iterat_images)
+
+            analyzer = DebrisAnalyzer( iterat_images, csv_file)
+            analyzer.process_images()
+
             # Instantiate DebrisAnalyzer and process the images
             debris_analyzer = DebrisAnalyzer(threshed_directory, csv_file_path)
             debris_analyzer.process_images() 
