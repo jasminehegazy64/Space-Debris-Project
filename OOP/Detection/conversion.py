@@ -13,22 +13,22 @@ import matplotlib.pyplot as plt
 
 
 #convert fits to png whilst sharpening images and smoothing them:
-def convert_fits_to_image(fits_file_path, output_image_filename):
+def convert_fits_to_image(fits_directory, output_directory):
     """
     This function converts FITS files in the given directory to images and saves them in the output directory.
     """
-    # # List all files in the FITS directory
-    # fits_files = os.listdir(fits_directory)
+    # List all files in the FITS directory
+    fits_files = os.listdir(fits_directory)
 
-    # # Iterate over each FITS file
-    # for fits_filename in fits_files:
-    #     # Skip if not a FITS file
-    #     if not fits_filename.endswith('.fits'):
-    #         continue
+    # Iterate over each FITS file
+    for fits_filename in fits_files:
+        # Skip if not a FITS file
+        if not fits_filename.endswith('.fits'):
+            continue
 
-    #     # Construct full paths for input FITS file and output image file
-    #     fits_file_path = os.path.join(fits_directory, fits_filename)
-    #     output_image_filename = os.path.join(output_directory, os.path.splitext(fits_filename)[0] + '.png')
+        # Construct full paths for input FITS file and output image file
+        fits_file_path = os.path.join(fits_directory, fits_filename)
+        output_image_filename = os.path.join(output_directory, os.path.splitext(fits_filename)[0] + '.png')
 
         # Open the FITS file
     with fits.open(fits_file_path) as hdul:

@@ -3,8 +3,8 @@ import cv2
 import numpy as np
 import csv
 from skimage import feature
-from conversion import convert_fits_to_image
-from images_Preprocessing.iterative_Threshholding import iterative_thresholding
+from Detection.conversion import convert_fits_to_image
+from Detection.images_Preprocessing.iterative_Threshholding import iterative_thresholding
 
 class DebrisAnalyzer:
     def __init__(self, threshed_directory, csv_file_path):
