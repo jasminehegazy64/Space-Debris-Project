@@ -13,7 +13,9 @@ import threading
 from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
 from OOP.Detection.Classification import DebrisAnalyzer  
-
+from OOP.Detection.conversion import convert_fits_to_image
+from OOP.Detection.images_Preprocessing.Otsu_Thresholding import otsu_thresholding_folder 
+from OOP.Detection.images_Preprocessing.iterative_Threshholding import iterative_thresholding_folder
 
 app = Flask(__name__)
 
@@ -180,37 +182,26 @@ def project():
             acc_id = session['acc_id']
 
             # Prepare a temporary directory for processing files
-            threshed_directory = 'threshed_directoryy'
-            os.makedirs(threshed_directory, exist_ok=True)
+            fits_files = []
 
-            # Create a CSV file path for the DebrisAnalyzer
-            csv_file_path = os.path.join(threshed_directory, 'output.csv')
+            for file in files:
+                if file.filename.lower().endswith('.fits'):
+                    fits_files.append(file)
 
-            convert_fits_to_image(fits_directory,images_directory)
-            otsu_thresholding_folder(images_directory,otsu_images)
-            iterative_thresholding_folder(images_directory,iterat_images)
+            if not fits_files:
+                flash('No FITS files uploaded', 'error')
+                return redirect(url_for('project'))
 
-            analyzer = DebrisAnalyzer( iterat_images, csv_file)
-            analyzer.process_images()
-
-            # Instantiate DebrisAnalyzer and process the images
-            debris_analyzer = DebrisAnalyzer(threshed_directory, csv_file_path)
-            debris_analyzer.process_images() 
-
-           # Read the CSV file content
-            with open(csv_file_path, 'rb') as csv_file:
-                csv_content = csv_file.read()
+            # Process FITS files
+            csv_content = process_fits_files(fits_files)
 
             # Save the CSV file content to the database
-            new_project = Project(project_id=str(uuid4()), projectname=projname, source=source, detection=csv_content, acc_id=acc_id)
+            new_project = Project(project_id=str(uuid.uuid4()), projectname=projname, source=source, detection=csv_content, acc_id=acc_id)
             db.session.add(new_project)
             db.session.commit()
           
             # Flash success message
             flash('Project created successfully', 'success')
-            # Clean up temporary files and directory
-            os.remove(csv_file_path)
-            os.rmdir(threshed_directory)
 
             return redirect(url_for('reports'))
         else:
@@ -218,6 +209,47 @@ def project():
             return redirect(url_for('signin'))  # Redirect to login page if user is not logged in
     else:
         return render_template('project.html')
+
+def process_fits_files(fits_files):
+    fits_directory = 'fits_directory'
+    os.makedirs(fits_directory, exist_ok=True)
+
+    # Save FITS files in the fits_directory
+    for file in fits_files:
+        file_path = os.path.join(fits_directory, secure_filename(file.filename))
+        file.save(file_path)
+
+    csv_file_path = os.path.join(fits_directory, 'output.csv')
+
+    # Create directories for images preprocessing
+    images_directory = 'images_directory'
+    os.makedirs(images_directory, exist_ok=True)
+
+    otsu_images = 'otsu_images'
+    os.makedirs(otsu_images, exist_ok=True)
+
+    iterat_images = 'iterat_images'
+    os.makedirs(iterat_images, exist_ok=True)
+
+    # Perform image conversion and preprocessing
+    convert_fits_to_image(fits_directory, images_directory)
+    otsu_thresholding_folder(images_directory, otsu_images)
+    iterative_thresholding_folder(images_directory, iterat_images)
+
+    # Perform debris analysis
+    analyzer = DebrisAnalyzer(iterat_images, csv_file_path)
+    analyzer.process_images()
+
+    # Read the CSV file content
+    with open(csv_file_path, 'rb') as csv_file:
+        csv_content = csv_file.read()
+
+    # Clean up temporary directories
+    os.rmdir(images_directory)
+    os.rmdir(otsu_images)
+    os.rmdir(iterat_images)
+
+    return csv_content
 
 
 if __name__ == '__main__':

@@ -3,7 +3,7 @@ from Detection.conversion import convert_fits_to_image
 from Detection.images_Preprocessing.Otsu_Thresholding import otsu_thresholding_folder 
 from Detection.images_Preprocessing.iterative_Threshholding import iterative_thresholding_folder
 from Detection.object_labeling import detect_objects
-from   Detection.Classification import DebrisAnalyzer
+from  Detection.Classification import DebrisAnalyzer
 import cv2 
 import os 
 from Tracking.optical_flow_fernback import OpticalFlowAnalyzer
