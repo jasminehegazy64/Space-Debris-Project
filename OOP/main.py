@@ -9,6 +9,8 @@ import os
 from Tracking.optical_flow_fernback import OpticalFlowAnalyzer
 from Tracking.Images_to_Vid import images_to_video 
 from Orbit_Determination.orbit_determination import SatelliteAnalyzer
+from Tracking.optical_flow_lucas_kanade import OpticalFlowAnalyzerLucasKanade
+from Tracking.optical_flow_horn_schunk import HornSchunckOpticalFlow
 
 
 
@@ -58,6 +60,16 @@ images_to_video(iterat_images, vid_path, fps)
 
 output_path="OOP\\Tracking\\fernbackOUT.MP4"
 analyzer = OpticalFlowAnalyzer(vid_path, output_path)
+analyzer.process_video()
+
+#Aplying the optical flow (lucas kanade )
+output_path="OOP\\Tracking\\LUC-KANOUT.MP4"
+analyzer = OpticalFlowAnalyzerLucasKanade(vid_path, output_path)
+analyzer.process_video()
+
+#Aplying the optical flow (lucas kanade )
+output_path="OOP\\Tracking\\horn-shuckOUT.MP4"
+analyzer = HornSchunckOpticalFlow(vid_path, output_path)
 analyzer.process_video()
 
 
