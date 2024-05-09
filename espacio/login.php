@@ -44,10 +44,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <div class="inner">
             <a href="index.html" class="logo"><img src="images/logo.png" alt="logo" width="45" height="43"></a>
             <nav id="nav">
-                <a href="index.html">Home</a>
-                <a href="document.html">Documentation</a>
-                <a href="contactus.html">Contact Us</a>
-                <a href="aboutus.html">About Us</a>
+                <!-- <a href="index.html">Home</a> -->
+                <!-- <a href="document.html">Documentation</a> -->
+                <!-- <a href="contactus.html">Contact Us</a> -->
+                <!-- <a href="aboutus.html">About Us</a> -->
                 <!-- <a href="reports.html">Reports</a> -->
                 <!-- <a href="account.html">Account</a> -->
                 <a href="login.php">Sign In</a>
