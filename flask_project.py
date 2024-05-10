@@ -21,6 +21,8 @@ from OOP.Detection.conversion import convert_fits_to_image
 from OOP.Detection.images_Preprocessing.Otsu_Thresholding import otsu_thresholding_folder 
 from OOP.Detection.images_Preprocessing.iterative_Threshholding import iterative_thresholding_folder
 from OOP.Detection.object_labeling import detect_objects
+from OOP.Tracking.Images_to_Vid import images_to_video
+from OOP.Tracking.optical_flow_fernback import OpticalFlowAnalyzer
 
 app = Flask(__name__)
 
@@ -50,7 +52,8 @@ class Project(db.Model):
     projectname = db.Column(db.String(255))
     source = db.Column(db.String(255))
     files = db.Column(db.LargeBinary)
-    detection = db.Column(db.LargeBinary)
+    detection = db.Column(db.LargeBinary) 
+    tracking = db.Column(db.LargeBinary)
     acc_id = db.Column(db.Integer, db.ForeignKey('account_info.acc_id'))
 
 # Set the secret key for session management and flashing messages
@@ -147,6 +150,27 @@ def reports():
 def messages():
     return render_template('messages.html')
 
+# def process_files_async(files, projname, source, acc_id):
+# Function to process files asynchronously
+            # zip_buffer = io.BytesIO()
+            
+            # with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
+            #     for file in files:
+            #         file_content = file.read()
+            #         file_name = secure_filename(file.filename)
+            #         zip_file.writestr(file_name, file_content)
+
+            # zip_contents = zip_buffer.getvalue()
+            
+            # new_project = Project(project_id=str(uuid4()), projectname=projname, source=source, files=zip_contents, acc_id=acc_id)
+            # db.session.add(new_project)
+            # db.session.commit()
+
+
+
+
+
+
 @app.route('/view_csv/<project_id>')
 def view_csv(project_id):
     # Fetch the project by its ID
@@ -189,49 +213,70 @@ def project():
             source = request.form['source']
             files = request.files.getlist('dataset')  # Use getlist for multiple files
             acc_id = session['acc_id']
+            
 
             # Ensure all files are uploaded before proceeding
             temp_dir = all_files_uploaded(files)
+
             if not temp_dir:
                 flash('No FITS files uploaded', 'error')
                 return redirect(url_for('project'))
 
+           
+
             try:
                 # Process FITS files
-                csv_content = process_fits_files( temp_dir)
+                csv_content = process_fits_files(temp_dir)
+                
 
-                # Save the CSV file content to the database
-                new_project = Project(project_id=str(uuid.uuid4()), projectname=projname, source=source, detection=csv_content, acc_id=acc_id)
+                
+
+                #  # Check if detection is selected
+                # if request.form.get('detect'):
+                #     for filename in os.listdir('iterat_images'):
+                #         # Load the binary image
+                #         binary_image = cv2.imread(os.path.join('iterat_images', filename), cv2.IMREAD_GRAYSCALE)
+
+                #         # Detect objects in the binary image
+                #         detected_objects, annotated_image = detect_objects(binary_image)
+
+                #         # Save the annotated image to the output folder
+                #         output_path = os.path.join('annotated_images', filename)
+                #         cv2.imwrite(output_path, annotated_image)
+                #         return render_template('detection_output.html', detected_objects=detected_objects,
+                #                                 annotated_image=annotated_image)
+
+                # Check if tracking is selected
+                if request.form.get('track'):
+                    
+                    images_to_video('iterat_images', 'OG.MP4', 5)
+
+                    
+                    analyzer = OpticalFlowAnalyzer('OG.MP4', 'fernbackOUT.MP4')
+                    analyzer.process_video()
+
+                    # Read the generated video file as binary data
+                    with open('fernbackOUT.MP4', 'rb') as video_file:
+                        video_data = video_file.read()
+
+                new_project = Project(project_id=str(uuid.uuid4()), projectname=projname, source=source, detection=csv_content, tracking=video_data, acc_id=acc_id)
                 db.session.add(new_project)
                 db.session.commit()
 
-                # # Check if detection is selected
-                if request.form.get('detect'):
-                    for filename in os.listdir(iterat_images):
-                            # Load the binary image
-                            binary_image = cv2.imread(os.path.join(iterat_images, filename), cv2.IMREAD_GRAYSCALE)
-
-                            # Detect objects in the binary image
-                            detected_objects, annotated_image = detect_objects(binary_image)
-
-                            # Save the annotated image to the output folder
-                            output_path = os.path.join(iterat_images, filename)
-                            cv2.imwrite(output_path, annotated_image)
-                            return render_template('detection_output.html', detected_objects=detected_objects, annotated_image=annotated_image)
-                # Flash success message
+                
+               
                 flash('Project created successfully', 'success')
-
                 return redirect(url_for('reports'))
+
             finally:
                 # Delete temporary directory and its contents
-                #shutil.rmtree(temp_dir)
+                # shutil.rmtree(temp_dir)
                 ("ay haga")
         else:
             flash('Please log in to create a project', 'error')
             return redirect(url_for('signin'))  # Redirect to login page if user is not logged in
     else:
         return render_template('project.html')
-
 
 
 def process_fits_files(temp_dir):

@@ -49,7 +49,32 @@
     <section id="banner">
       <h1>Reports</h1>
     </section>
-    <br />
+    <br>
+    <!-- Table Container -->
+    <div class="table-wrapper">
+        <!-- <table class="alt"> -->
+        <!-- Table -->
+        <div class="container">
+            <table>
+                <tr>
+                    <th>Project Name</th>
+                    <th>Date</th>
+                    <th>Detection</th>
+                    <th>Tracking</th>
+                    <th>Full Report</th>
+                </tr>
+                {% for project in projects %}
+                <tr>
+                    <td>{{ project.projectname }}</td>
+                    <td>{{ project.date }}</td>
+                    <td><a href="{{ url_for('view_csv', project_id=project.project_id) }}">View CSV</a>
+                        
+                        <td><a href="{{ url_for('download_video', project_id=project.project_id) }}">Download Tracking Video</a></td>
+                        <td><a href="{{ url_for('fullreport', project_id=project.project_id) }}"><input type="button" value="Full Report"></a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
 
     <div class="table-wrapper">
       <div class="container">
