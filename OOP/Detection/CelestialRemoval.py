@@ -420,3 +420,13 @@ plt.plot(model, acc, 'r*-')  # 'r' is the color red
 plt.xlabel('model')
 plt.ylabel('accuracy')
 plt.title('Conclusion')
+
+
+# prediction of best model (Random Forest)
+joblib.dump(rf_model, 'best_model.pkl')
+loaded_model = joblib.load('best_model.pkl')
+
+predictions = loaded_model.predict(
+    df.drop(['Object ID', 'Image', 'Prediction'], axis=1))
+
+predictions
