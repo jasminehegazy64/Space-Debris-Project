@@ -223,13 +223,18 @@ def project():
                 db.session.commit()
 
                 # # Check if detection is selected
-                # if request.form.get('detect'):
-                #     # Detect objects in the binary image
-                #     binary_image = cv2.imread(os.path.join(temp_dir, 'iterat_images', filename), cv2.IMREAD_GRAYSCALE)
-                #     detected_objects, annotated_image = detect_objects(binary_image)
-                #     # Create HTML page for output and provide option to download
-                #     return render_template('detection_output.html', detected_objects=detected_objects, annotated_image=annotated_image)
+                if request.form.get('detect'):
+                    for filename in os.listdir(iterat_images):
+                            # Load the binary image
+                            binary_image = cv2.imread(os.path.join(iterat_images, filename), cv2.IMREAD_GRAYSCALE)
 
+                            # Detect objects in the binary image
+                            detected_objects, annotated_image = detect_objects(binary_image)
+
+                            # Save the annotated image to the output folder
+                            output_path = os.path.join(iterat_images, filename)
+                            cv2.imwrite(output_path, annotated_image)
+                            return render_template('detection_output.html', detected_objects=detected_objects, annotated_image=annotated_image)
                 # Flash success message
                 flash('Project created successfully', 'success')
 
