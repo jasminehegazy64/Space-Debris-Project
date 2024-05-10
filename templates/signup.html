@@ -16,12 +16,10 @@
     <header id="header">
         <div class="inner">
 			<a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43"></a>
-            <nav id="nav"><a href="{{ url_for('index') }}">Home</a>
-                <a href="{{ url_for('documentation') }}">Documentation</a>
-                <a href="{{ url_for('contactus') }}">Contact Us</a>
-                <a href="{{ url_for('aboutus') }}">About Us</a>
+            <nav id="nav">
                 <a href="{{ url_for('signin') }}">Sign In</a>
                 <a href="{{ url_for('signup') }}">Sign Up</a>
+                <a href="{{ url_for('admindashboard') }}">Admin Dashboard</a>
             </nav><a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
         </div>
     </header><!-- Banner -->

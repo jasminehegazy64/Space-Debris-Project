@@ -17,13 +17,10 @@
         <div class="inner">
             <a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}"
                     alt="logo" width="45" height="43"></a>
-            {% comment %} <nav id="nav"><a href="{{ url_for('index') }}">Home</a> {% endcomment %}
-                {% comment %} <a href="{{ url_for('documentation') }}">Documentation</a> {% endcomment %}
-                {% comment %} <a href="{{ url_for('contactus') }}">Contact Us</a> {% endcomment %}
-                {% comment %} <a href="{{ url_for('aboutus') }}">About Us</a> {% endcomment %}
+            <nav id="nav">
                 <a href="{{ url_for('signin') }}">Sign In</a>
                 <a href="{{ url_for('signup') }}">Sign Up</a>
-                {% comment %} <a href="{{ url_for('admindashboard') }}">Admin Dashboard</a> {% endcomment %}
+                <a href="{{ url_for('admindashboard') }}">Admin Dashboard</a>
             </nav><a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
         </div>
     </header><!-- Banner -->

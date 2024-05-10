@@ -14,17 +14,14 @@
 	 <!-- Header -->
 	 <header id="header">
         <div class="inner">
-			<a href="{{ url_for('homeindex') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43"></a>
-            <nav id="nav"><a href="{{ url_for('homeindex') }}">Home</a>
+			<a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43"></a>
+            <nav id="nav"><a href="{{ url_for('index') }}">Home</a>
                 <a href="{{ url_for('document') }}">Documentation</a>
                 <a href="{{ url_for('contactus') }}">Contact Us</a>
                 <a href="{{ url_for('aboutus') }}">About Us</a>
                 <a href="{{ url_for('reports') }}">Reports</a>
                 <a href="{{ url_for('account') }}">Account</a>
-                {% comment %} <a href="{{ url_for('signinindex') }}">Sign In</a> {% endcomment %}
-                {% comment %} <a href="{{ url_for('signupindex') }}">Sign Up</a> {% endcomment %}
                 <a href="{{ url_for('project') }}">Project</a>
-                {% comment %} <a href="{{ url_for('admindashboard') }}">Admin Dashboard</a> {% endcomment %}
             </nav><a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
         </div>
     </header><!-- Banner -->
