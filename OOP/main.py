@@ -59,6 +59,7 @@ images_to_video(iterat_images, vid_path, fps)
 #Applying The optical flow (Dense- Fernback)
 
 output_path="OOP\\Tracking\\fernbackOUT.MP4"
+csv_file_fernback='OOP\\Tracking\\trackingvalues.xslx'
 analyzer = OpticalFlowAnalyzer(vid_path, output_path)
 analyzer.process_video()
 
@@ -77,3 +78,5 @@ analyzer.process_video()
 
 analyzer = SatelliteAnalyzer(fits_directory)
 analyzer.analyze()
+
+
