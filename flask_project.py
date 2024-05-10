@@ -24,15 +24,15 @@ from OOP.Detection.object_labeling import detect_objects
 
 app = Flask(__name__)
 
-# MySQL Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Happylola.123@localhost/espacio'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
 # # MySQL Configuration
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:salmabaligh123@localhost/espacio'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Happylola.123@localhost/espacio'
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # db = SQLAlchemy(app)
+
+# MySQL Configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:salmabaligh123@localhost/espacio'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 # Define your AccountInfo model
 class AccountInfo(db.Model):
@@ -58,7 +58,7 @@ app.secret_key = '0'
 
 @app.route('/')
 def index():
-    return render_template('signin.html')
+    return render_template('index.html')
 
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
@@ -146,24 +146,6 @@ def reports():
 @app.route('/messages')
 def messages():
     return render_template('messages.html')
-
-# def process_files_async(files, projname, source, acc_id):
-# Function to process files asynchronously
-            # zip_buffer = io.BytesIO()
-            
-            # with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
-            #     for file in files:
-            #         file_content = file.read()
-            #         file_name = secure_filename(file.filename)
-            #         zip_file.writestr(file_name, file_content)
-
-            # zip_contents = zip_buffer.getvalue()
-            
-            # new_project = Project(project_id=str(uuid4()), projectname=projname, source=source, files=zip_contents, acc_id=acc_id)
-            # db.session.add(new_project)
-            # db.session.commit()
-
-
 
 @app.route('/view_csv/<project_id>')
 def view_csv(project_id):
@@ -293,8 +275,6 @@ def process_fits_files(temp_dir):
         # If the CSV file doesn't exist, return None
         flash('Error: CSV file not generated', 'error')
         return None
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)

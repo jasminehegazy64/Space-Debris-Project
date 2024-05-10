@@ -1,8 +1,7 @@
-<!DOCTYPE HTML>
 <html>
 
 <head>
-    <title>ESPACIO</title>
+    <title>Home Page</title>
 	<meta charset="utf-8">
 	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,7 +9,6 @@
 </head>
 
 <body>
-
 	 <!-- Header -->
 	 <header id="header">
         <div class="inner">
@@ -24,14 +22,14 @@
                 <a href="{{ url_for('project') }}">Project</a>
             </nav><a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
         </div>
-    </header><!-- Banner -->
+    </header>
+
 	<section id="banner">
 		<h1>Welcome to ESPACIO!</h1>
 		<p>Your Ultimate Solution for Debris Detection, Tracking, and Collision Prediction!
 		</p>
 	</section>
 
-	<!-- Two -->
 	<section id="two" class="wrapper style1 special">
 		<div class="inner">
 			<header>
@@ -68,7 +66,8 @@
 				</div>
 			</div>
 		</div>
-	</section><!-- Footer -->
+	</section>
+
 	<footer id="footer">
 		<div class="inner">
 			<div class="flex">
@@ -82,9 +81,8 @@
 			</div>
 		</div>
 	</footer>
-	<div class="copyright">
-		ESPACIO : Detecting, Tracking, and Collision Prediction of Space Debris
-	</div>
+
+	<div class="copyright">ESPACIO : Detecting, Tracking, and Collision Prediction of Space Debris</div>
 
 	<!-- Scripts -->
 	<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
@@ -93,5 +91,4 @@
 	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 	
 </body>
-
 </html>

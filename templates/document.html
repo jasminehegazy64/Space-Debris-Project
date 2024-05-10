@@ -1,130 +1,139 @@
-<!DOCTYPE HTML>
 <html>
+  <head>
+    <title>Documentation</title>
+    <meta charset="utf-8" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+  </head>
 
-<head>
-    <title>ESPACIO</title>
-    <meta charset="utf-8">
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-</head>
-
-<body class="subpage">
-
-     <!-- Header -->
-     <header id="header">
-        <div class="inner">
-			<a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43"></a>
-            <nav id="nav"><a href="{{ url_for('index') }}">Home</a>
-                <a href="{{ url_for('document.html') }}">Documentation</a>
-                <a href="{{ url_for('contactus') }}">Contact Us</a>
-                <a href="{{ url_for('aboutus') }}">About Us</a>
-                <a href="{{ url_for('reports') }}">Reports</a>
-                <a href="{{ url_for('account') }}">Account</a>
-                <a href="{{ url_for('project') }}">Project</a>
-            </nav><a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
-        </div>
-    </header><!-- Banner -->
+  <body class="subpage">
+    <!-- Header -->
+    <header id="header">
+      <div class="inner">
+        <a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43" /></a>
+        <nav id="nav">
+          <a href="{{ url_for('index') }}">Home</a>
+          <a href="{{ url_for('documentation') }}">Documentation</a>
+          <a href="{{ url_for('contactus') }}">Contact Us</a>
+          <a href="{{ url_for('aboutus') }}">About Us</a>
+          <a href="{{ url_for('reports') }}">Reports</a>
+          <a href="{{ url_for('account') }}">Account</a>
+          <a href="{{ url_for('project') }}">Project</a>
+        </nav><a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+      </div>
+    </header>
     <section id="banner">
-        <h1>Documentation</h1>
+      <h1>Documentation</h1>
     </section>
-    <!-- Main -->
+
     <section id="main" class="wrapper">
-        <div class="inner">
-            <section id="three" class="wrapper">
-                <div class="inner">
-                    <div class="flex flex-2">
-                        <article>
-                            <div class="image fit">
-                                <img src="{{ url_for('static', filename='images/doc1.jpg') }}" alt="Pic 01" width="576" height="196">
-                            </div>
-                            <header>
-                                <h3>Introduction</h3>
-                            </header>
-                            <p>Welcome to our website, where advanced technology is utilized to detect, track, and predict collisions of space debris, ensuring the safety of satellite operations and space exploration endeavors.</p>
-                            <footer><a href="#" class="button special">More</a>
-                            </footer>
-                        </article>
-                        <article>
-                            <div class="image fit">
-                                <img src="{{ url_for('static', filename='images/doc2.jpg') }}" alt="Pic 02" width="576" height="196">
-                            </div>
-                            <header>
-                                <h3>ESPACIO</h3>
-                            </header>
-                            <p>ESPACIO, our groundbreaking website, is at the forefront of space debris monitoring and collision prediction. Leveraging state-of-the-art technology, ESPACIO amalgamates satellite telemetry data, advanced machine learning algorithms, and sophisticated computational modeling to meticulously track the movement of space debris in Earth's orbit. </p>
-                            <footer><a href="#" class="button special">More</a>
-                            </footer>
-
-                        </article>
-                    </div>
-                    <br>
-                    <div class="flex flex-2">
-                        <article>
-                            <div class="image fit">
-                                <img src="{{ url_for('static', filename='images/doc3.jpg') }}" alt="Pic 01" width="576" height="196">
-                            </div>
-                            <header>
-                                <h3>Background</h3>
-                            </header>
-                            <p>Our website was developed by a team of engineers and data scientists with expertise in orbital mechanics and predictive modeling to address the growing concern of space debris collisions endangering space missions.</p>
-                            <footer><a href="#" class="button special">More</a>
-                            </footer>
-                        </article>
-                        <article>
-                            <div class="image fit">
-                                <img src="{{ url_for('static', filename='images/doc4.jpg') }}" alt="Pic 02" width="576" height="196">
-                            </div>
-                            <header>
-                                <h3>Resources</h3>
-                            </header>
-                            <p>Our website utilizes a combination of satellite telemetry data, machine learning algorithms, and computational modeling to detect, track, and predict the trajectories of space debris, providing invaluable insights for space agencies, satellite operators, and researchers worldwide.</p>
-                            <footer><a href="#" class="button special">More</a>
-                            </footer>
-
-                        </article>
-                    </div>
-                    <br>
-                    <div class="flex flex-2">
-                        <article>
-                            <div class="image fit">
-                                <img src="{{ url_for('static', filename='images/doc5.jpg') }}" alt="Pic 01" width="576" height="196">
-                            </div>
-                            <header>
-                                <h3>FAQ</h3>
-                            </header>
-                            <p>ESPACIO: Frequently Asked Questions (FAQ)</p>
-                            <footer><a href="#" class="button special">More</a>
-                            </footer>
-                        </article>
-                    </div>
+      <div class="inner">
+        <section id="three" class="wrapper">
+          <div class="inner">
+            <div class="flex flex-2">
+              <article>
+                <div class="image fit">
+                  <img src="{{ url_for('static', filename='images/doc1.jpg') }}" alt="Pic 01" width="576" height="196" />
                 </div>
-            </section>
-        </div>
-    </section><!-- Footer -->
-    <footer id="footer">
-        <div class="inner">
-            <div class="flex">
-                <ul class="icons">
-                    <li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
-                    <li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
-                    <li><a href="#" class="icon fa-linkedin"><span class="label">linkedIn</span></a></li>
-                    <li><a href="#" class="icon fa-pinterest-p"><span class="label">Pinterest</span></a></li>
-                    <li><a href="#" class="icon fa-vimeo"><span class="label">Vimeo</span></a></li>
-                </ul>
+                <header>
+                  <h3>Introduction</h3>
+                </header>
+                <p>Welcome to our website, where advanced technology is utilized to detect, track, and predict collisions of space debris, ensuring the safety of satellite operations and space exploration endeavors.</p>
+                <footer>
+                  <a href="#" class="button special">More</a>
+                </footer>
+              </article>
+              <article>
+                <div class="image fit">
+                  <img src="{{ url_for('static', filename='images/doc2.jpg') }}" alt="Pic 02" width="576" height="196" />
+                </div>
+                <header>
+                  <h3>ESPACIO</h3>
+                </header>
+                <p>ESPACIO, our groundbreaking website, is at the forefront of space debris monitoring and collision prediction. Leveraging state-of-the-art technology, ESPACIO amalgamates satellite telemetry data, advanced machine learning algorithms, and sophisticated computational modeling to meticulously track the movement of space debris in Earth's orbit.</p>
+                <footer>
+                  <a href="#" class="button special">More</a>
+                </footer>
+              </article>
             </div>
+            <br />
+            <div class="flex flex-2">
+              <article>
+                <div class="image fit">
+                  <img src="{{ url_for('static', filename='images/doc3.jpg') }}" alt="Pic 01" width="576" height="196" />
+                </div>
+                <header>
+                  <h3>Background</h3>
+                </header>
+                <p>Our website was developed by a team of engineers and data scientists with expertise in orbital mechanics and predictive modeling to address the growing concern of space debris collisions endangering space missions.</p>
+                <footer>
+                  <a href="#" class="button special">More</a>
+                </footer>
+              </article>
+              <article>
+                <div class="image fit">
+                  <img src="{{ url_for('static', filename='images/doc4.jpg') }}" alt="Pic 02" width="576" height="196" />
+                </div>
+                <header>
+                  <h3>Resources</h3>
+                </header>
+                <p>Our website utilizes a combination of satellite telemetry data, machine learning algorithms, and computational modeling to detect, track, and predict the trajectories of space debris, providing invaluable insights for space agencies, satellite operators, and researchers worldwide.</p>
+                <footer>
+                  <a href="#" class="button special">More</a>
+                </footer>
+              </article>
+            </div>
+            <br />
+            <div class="flex flex-2">
+              <article>
+                <div class="image fit">
+                  <img src="{{ url_for('static', filename='images/doc5.jpg') }}" alt="Pic 01" width="576" height="196" />
+                </div>
+                <header>
+                  <h3>FAQ</h3>
+                </header>
+                <p>ESPACIO: Frequently Asked Questions (FAQ)</p>
+                <footer>
+                  <a href="#" class="button special">More</a>
+                </footer>
+              </article>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footer">
+      <div class="inner">
+        <div class="flex">
+          <ul class="icons">
+            <li>
+              <a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a>
+            </li>
+            <li>
+              <a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a>
+            </li>
+            <li>
+              <a href="#" class="icon fa-linkedin"><span class="label">linkedIn</span></a>
+            </li>
+            <li>
+              <a href="#" class="icon fa-pinterest-p"><span class="label">Pinterest</span></a>
+            </li>
+            <li>
+              <a href="#" class="icon fa-vimeo"><span class="label">Vimeo</span></a>
+            </li>
+          </ul>
         </div>
+      </div>
     </footer>
-    <div class="copyright">
-        ESPACIO : Detecting, Tracking, and Collision Prediction of Space Debris
-    </div>
+    <div class="copyright">ESPACIO : Detecting, Tracking, and Collision Prediction of Space Debris</div>
 
     <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/util.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    
-</body>
-
+  </body>
 </html>

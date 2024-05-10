@@ -1,108 +1,114 @@
-<!DOCTYPE HTML>
 <html>
-
-<head>
-    <title>ESPACIO</title>
-    <meta charset="utf-8">
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <head>
+    <title>Reports</title>
+    <meta charset="utf-8" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
     <style>
-        .container {
-            max-width: 100%;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
+      .container {
+        max-width: 100%;
+        overflow-x: auto;
+      }
+      
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      
+      th,
+      td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+      
+      th {
+        background-color: #f2f2f2;
+      }
     </style>
-</head>
+  </head>
 
-<body class="subpage">
+  <body class="subpage">
+    <!-- Header -->
+    <header id="header">
+      <div class="inner">
+        <a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43" /></a>
+        <nav id="nav">
+          <a href="{{ url_for('index') }}">Home</a>
+          <a href="{{ url_for('document') }}">Documentation</a>
+          <a href="{{ url_for('contactus') }}">Contact Us</a>
+          <a href="{{ url_for('aboutus') }}">About Us</a>
+          <a href="{{ url_for('reports') }}">Reports</a>
+          <a href="{{ url_for('account') }}">Account</a>
+          <a href="{{ url_for('project') }}">Project</a>
+        </nav><a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+      </div>
+    </header>
 
-     <!-- Header -->
-     <header id="header">
-        <div class="inner">
-			<a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43"></a>
-            <nav id="nav"><a href="{{ url_for('index') }}">Home</a>
-                <a href="{{ url_for('documentation') }}">Documentation</a>
-                <a href="{{ url_for('contactus') }}">Contact Us</a>
-                <a href="{{ url_for('aboutus') }}">About Us</a>
-                <a href="{{ url_for('reports') }}">Reports</a>
-                <a href="{{ url_for('account') }}">Account</a>
-                <a href="{{ url_for('project') }}">Project</a>
-            </nav><a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
-        </div>
-    </header><!-- Banner -->
     <section id="banner">
-        <h1>Reports</h1>
+      <h1>Reports</h1>
     </section>
-    <br>
-    <!-- Table Container -->
-    <div class="table-wrapper">
-        <!-- <table class="alt"> -->
-        <!-- Table -->
-        <div class="container">
-            <table>
-                <tr>
-                    <th>Project Name</th>
-                    <th>Date</th>
-                    <th>Detection</th>
-                    <th>Tracking</th>
-                    <th>Full Report</th>
-                </tr>
-                {% for project in projects %}
-                <tr>
-                    <td>{{ project.projectname }}</td>
-                    <td>{{ project.date }}</td>
-                    <td><a href="{{ url_for('view_csv', project_id=project.project_id) }}">View CSV</a>
-                        
-                    </td>
-                    <td><a href="{{ url_for('fullreport', project_id=project.project_id) }}"><input type="button" value="Full Report"></a></td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
+    <br />
 
+    <div class="table-wrapper">
+      <div class="container">
+        <table>
+          <tr>
+            <th>Project Name</th>
+            <th>Date</th>
+            <th>Detection</th>
+            <th>Tracking</th>
+            <th>Full Report</th>
+          </tr>
+          {% for project in projects %}
+            <tr>
+              <td>{{ project.projectname }}</td>
+              <td>{{ project.date }}</td>
+              <td>
+                <a href="{{ url_for('view_csv', project_id=project.project_id) }}">View CSV</a>
+              </td>
+              <td>
+                <a href="{{ url_for('fullreport', project_id=project.project_id) }}"><input type="button" value="Full Report" /></a>
+              </td>
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
     </div>
-    <br>
+    <br />
+
     <!-- Footer -->
     <footer id="footer">
-        <div class="inner">
-            <div class="flex">
-                <ul class="icons">
-                    <li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
-                    <li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
-                    <li><a href="#" class="icon fa-linkedin"><span class="label">linkedIn</span></a></li>
-                    <li><a href="#" class="icon fa-pinterest-p"><span class="label">Pinterest</span></a></li>
-                    <li><a href="#" class="icon fa-vimeo"><span class="label">Vimeo</span></a></li>
-                </ul>
-            </div>
+      <div class="inner">
+        <div class="flex">
+          <ul class="icons">
+            <li>
+              <a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a>
+            </li>
+            <li>
+              <a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a>
+            </li>
+            <li>
+              <a href="#" class="icon fa-linkedin"><span class="label">linkedIn</span></a>
+            </li>
+            <li>
+              <a href="#" class="icon fa-pinterest-p"><span class="label">Pinterest</span></a>
+            </li>
+            <li>
+              <a href="#" class="icon fa-vimeo"><span class="label">Vimeo</span></a>
+            </li>
+          </ul>
         </div>
+      </div>
     </footer>
-    <div class="copyright">
-        ESPACIO : Detecting, Tracking, and Collision Prediction of Space Debris
-    </div>
+
+    <div class="copyright">ESPACIO : Detecting, Tracking, and Collision Prediction of Space Debris</div>
 
     <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/util.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    
-</body>
-
+  </body>
 </html>
