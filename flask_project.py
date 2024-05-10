@@ -29,6 +29,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Happylola.123@loca
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+# # MySQL Configuration
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:salmabaligh123@localhost/espacio'
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# db = SQLAlchemy(app)
+
 # Define your AccountInfo model
 class AccountInfo(db.Model):
     acc_id = db.Column(db.Integer, primary_key=True)
