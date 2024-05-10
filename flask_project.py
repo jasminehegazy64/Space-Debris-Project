@@ -8,6 +8,8 @@ import uuid
 import io
 import zipfile
 import tempfile
+import shutil
+import pandas as pd
 from zipfile import ZipFile
 import threading
 from uuid import uuid4
@@ -210,6 +212,8 @@ def project():
     else:
         return render_template('project.html')
 
+
+
 def process_fits_files(fits_files):
     fits_directory = 'fits_directory'
     os.makedirs(fits_directory, exist_ok=True)
@@ -218,8 +222,6 @@ def process_fits_files(fits_files):
     for file in fits_files:
         file_path = os.path.join(fits_directory, secure_filename(file.filename))
         file.save(file_path)
-
-    csv_file_path = os.path.join(fits_directory, 'output.csv')
 
     # Create directories for images preprocessing
     images_directory = 'images_directory'
@@ -237,19 +239,27 @@ def process_fits_files(fits_files):
     iterative_thresholding_folder(images_directory, iterat_images)
 
     # Perform debris analysis
+    csv_file_path = os.path.join('output.csv')
     analyzer = DebrisAnalyzer(iterat_images, csv_file_path)
     analyzer.process_images()
 
-    # Read the CSV file content
-    with open(csv_file_path, 'rb') as csv_file:
-        csv_content = csv_file.read()
+    # Check if the CSV file exists
+    if os.path.exists(csv_file_path):
+        # Read the content of the CSV file
+        with open(csv_file_path, 'rb') as csv_file:
+            csv_content = csv_file.read()
 
-    # Clean up temporary directories
-    os.rmdir(images_directory)
-    os.rmdir(otsu_images)
-    os.rmdir(iterat_images)
+        # Clean up temporary directories
+        shutil.rmtree(images_directory)
+        shutil.rmtree(otsu_images)
+        shutil.rmtree(iterat_images)
 
-    return csv_content
+        return csv_content
+    else:
+        # If the CSV file doesn't exist, return None
+        flash('Error: CSV file not generated', 'error')
+        return None
+
 
 
 if __name__ == '__main__':
