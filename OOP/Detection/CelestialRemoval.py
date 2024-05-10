@@ -422,13 +422,11 @@ plt.ylabel('accuracy')
 plt.title('Conclusion')
 
 
-# Assuming 'best_model' is your trained model
+# prediction of best model (Random Forest)
 joblib.dump(rf_model, 'best_model.pkl')
-
 loaded_model = joblib.load('best_model.pkl')
-# do preprocessing needed
 
-# Assuming 'new_data' is a DataFrame with the same features as the training data
 predictions = loaded_model.predict(
     df.drop(['Object ID', 'Image', 'Prediction'], axis=1))
+
 predictions
