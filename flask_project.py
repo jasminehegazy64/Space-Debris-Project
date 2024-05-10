@@ -27,7 +27,6 @@ app = Flask(__name__)
 # MySQL Configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:salmabaligh123@localhost/espacio'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 db = SQLAlchemy(app)
 
 # Define your AccountInfo model
@@ -158,9 +157,6 @@ def messages():
             # new_project = Project(project_id=str(uuid4()), projectname=projname, source=source, files=zip_contents, acc_id=acc_id)
             # db.session.add(new_project)
             # db.session.commit()
-
-
-
 
 
 
