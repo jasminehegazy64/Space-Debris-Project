@@ -26,10 +26,14 @@ from OOP.Tracking.optical_flow_fernback import OpticalFlowAnalyzer
 
 app = Flask(__name__)
 
-# MySQL Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Happylola.123@localhost/espacio'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# # MySQL Configuration
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Happylola.123@localhost/espacio'
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# db = SQLAlchemy(app)
 
+# MySQL Configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:salmabaligh123@localhost/espacio'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 # Define your AccountInfo model
@@ -57,7 +61,7 @@ app.secret_key = '0'
 
 @app.route('/')
 def index():
-    return render_template('signin.html')
+    return render_template('index.html')
 
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
@@ -162,21 +166,8 @@ def messages():
             # db.session.add(new_project)
             # db.session.commit()
 
-@app.route('/download_video/<project_id>')
-def download_video(project_id):
-    # Fetch the project by its ID
-    project = Project.query.get(project_id)
-    if project:
-        # Create a response containing the video data
-        response = make_response(project.tracking)
-        # Set the Content-Disposition header to specify the filename
-        response.headers['Content-Disposition'] = f'attachment; filename=project_video.mp4'
-        # Set the content type
-        response.headers['Content-Type'] = 'video/mp4'
-        return response  # Return the response object
-    else:
-        flash('Project not found', 'error')
-        return redirect(url_for('reports'))
+
+
 
 
 
@@ -329,8 +320,6 @@ def process_fits_files(temp_dir):
         # If the CSV file doesn't exist, return None
         flash('Error: CSV file not generated', 'error')
         return None
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)

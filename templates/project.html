@@ -1,114 +1,117 @@
-<!DOCTYPE HTML>
 <html>
-
-<head>
-    <title>ESPACIO</title>
-    <meta charset="utf-8">
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <head>
+    <title>Project</title>
+    <meta charset="utf-8" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
     <script>
-        function validateFile() {
-            var fileInput = document.getElementById('dataset');
-            var filePath = fileInput.value;
-            var allowedExtensions = /(\.fits)$/i;
-            if (!allowedExtensions.exec(filePath)) {
-                alert('Invalid file type! Please upload files with .fits extension only.');
-                fileInput.value = '';
-                return false;
-            }
-            return true;
+      function validateFile() {
+        var fileInput = document.getElementById('dataset')
+        var filePath = fileInput.value
+        var allowedExtensions = /(\.fits)$/i
+        if (!allowedExtensions.exec(filePath)) {
+          alert('Invalid file type! Please upload files with .fits extension only.')
+          fileInput.value = ''
+          return false
         }
+        return true
+      }
     </script>
-</head>
+  </head>
 
-<body class="subpage">
-
+  <body class="subpage">
     <!-- Header -->
     <header id="header">
-        <div class="inner">
-            <a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}"
-                    alt="logo" width="45" height="43"></a>
-            <nav id="nav"><a href="{{ url_for('index') }}">Home</a>
-                <a href="{{ url_for('documentation') }}">Documentation</a>
-                <a href="{{ url_for('contactus') }}">Contact Us</a>
-                <a href="{{ url_for('aboutus') }}">About Us</a>
-                <a href="{{ url_for('reports') }}">Reports</a>
-                <a href="{{ url_for('account') }}">Account</a>
-                <a href="{{ url_for('project') }}">Project</a>
-            </nav><a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
-        </div>
-    </header><!-- Banner -->
+      <div class="inner">
+        <a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43" /></a>
+        <nav id="nav">
+          <a href="{{ url_for('index') }}">Home</a>
+          <a href="{{ url_for('documentation') }}">Documentation</a>
+          <a href="{{ url_for('contactus') }}">Contact Us</a>
+          <a href="{{ url_for('aboutus') }}">About Us</a>
+          <a href="{{ url_for('reports') }}">Reports</a>
+          <a href="{{ url_for('account') }}">Account</a>
+          <a href="{{ url_for('project') }}">Project</a>
+        </nav><a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+      </div>
+    </header>
+
     <section id="banner">
-        <h1>Create a New Project</h1>
+      <h1>Create a New Project</h1>
     </section>
+
     <section id="main" class="wrapper">
-        <div class="inner">
+      <div class="inner">
+        <form method="post" action="#" enctype="multipart/form-data" onsubmit="return validateFile()">
+          <center>
+            <div class="row uniform">
+              <div class="6u 12u$(xsmall)">
+                <input type="text" name="projname" id="projname" value="" placeholder="Project Name" />
+              </div>
+              <div class="6u$ 12u$(xsmall)">
+                <input type="text" name="source" id="source" value="" placeholder="Source of the Dataset" />
+              </div>
+              <div class="12u$(small)">
+                <input type="checkbox" id="detect" name="detect" checked /><label for="detect">Detection</label>
+              </div>
+              <div class="12u$(small)">
+                <input type="checkbox" id="track" name="track" /><label for="track">Tracking</label>
+              </div>
+              <div class="12u$(small)">
+                <input type="checkbox" id="collision" name="collision" /><label for="collision">Collision Prediction</label>
+              </div>
+              <div class="12u$">
+                Dataset :<input type="file" name="dataset" id="dataset" accept=".fits" webkitdirectory multiple required />
+              </div>
 
-            <!-- Form -->
-            <form method="post" action="#" enctype="multipart/form-data" onsubmit="return validateFile()">
-                <center>
-                    <div class="row uniform">
-                        <div class="6u 12u$(xsmall)">
-                            <input type="text" name="projname" id="projname" value="" placeholder="Project Name">
-                        </div>
-                        <div class="6u$ 12u$(xsmall)">
-                            <input type="text" name="source" id="source" value="" placeholder="Source of the Dataset">
-                        </div>
-                        <!-- Break -->
-                        <div class=" 12u$(small)">
-                            <input type="checkbox" id="detect" name="detect" checked><label for="detect">Detection</label>
-                        </div>
-                        <div class="12u$(small)">
-                            <input type="checkbox" id="track" name="track" ><label for="track">Tracking</label>
-                        </div>
-                        <div class=" 12u$(small)">
-                            <input type="checkbox" id="collision" name="collision"><label
-                                for="collision">Collision
-                                Prediction</label>
-                        </div>
-
-                        <!-- Break -->
-                        <div class="12u$">
-                            Dataset : <input type="file" name="dataset" id="dataset" accept=".fits" webkitdirectory
-                                multiple required></input>
-                        </div>
-                        <!-- Break -->
-                        <div class="12u$">
-                            <ul class="actions">
-                                <li><input type="submit" value="GO!"></li>
-                                <li><input type="reset" value="Reset" class="alt"></li>
-                            </ul>
-                        </div>
-                    </div>
-            </form>
-            </center>
-        </div>
+              <div class="12u$">
+                <ul class="actions">
+                  <li>
+                    <input type="submit" value="GO!" />
+                  </li>
+                  <li>
+                    <input type="reset" value="Reset" class="alt" />
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </center>
+        </form>
+      </div>
     </section>
+
     <!-- Footer -->
     <footer id="footer">
-        <div class="inner">
-            <div class="flex">
-                <ul class="icons">
-                    <li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
-                    <li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
-                    <li><a href="#" class="icon fa-linkedin"><span class="label">linkedIn</span></a></li>
-                    <li><a href="#" class="icon fa-pinterest-p"><span class="label">Pinterest</span></a></li>
-                    <li><a href="#" class="icon fa-vimeo"><span class="label">Vimeo</span></a></li>
-                </ul>
-            </div>
+      <div class="inner">
+        <div class="flex">
+          <ul class="icons">
+            <li>
+              <a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a>
+            </li>
+            <li>
+              <a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a>
+            </li>
+            <li>
+              <a href="#" class="icon fa-linkedin"><span class="label">linkedIn</span></a>
+            </li>
+            <li>
+              <a href="#" class="icon fa-pinterest-p"><span class="label">Pinterest</span></a>
+            </li>
+            <li>
+              <a href="#" class="icon fa-vimeo"><span class="label">Vimeo</span></a>
+            </li>
+          </ul>
         </div>
+      </div>
     </footer>
-    <div class="copyright">
-        ESPACIO : Detecting, Tracking, and Collision Prediction of Space Debris
-    </div>
+
+    <div class="copyright">ESPACIO : Detecting, Tracking, and Collision Prediction of Space Debris</div>
 
     <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/util.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-
-</body>
-
+  </body>
 </html>

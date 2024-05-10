@@ -1,8 +1,6 @@
-<!DOCTYPE HTML>
 <html>
-
 <head>
-    <title>ESPACIO</title>
+    <title>Admin</title>
 	<meta charset="utf-8">
 	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,16 +20,15 @@
 			</nav><a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
 		</div>
 	</header>
-	<!-- Banner -->
+
 	<section id="banner">
 		<h1>Welcome to ESPACIO!</h1>
 		<h1>Admin Dashboard
         </h1>
 	</section>
-	<!-- Form -->
+
 	<form method="post" action="#">
 		<center>
-			<!-- <div class="row uniform"> -->
 				<br><br>
 			<div class="6u$ 12u$(xsmall)">
 				<input type="email" name="email" id="email" value="" placeholder="Email">
@@ -42,7 +39,6 @@
 			</div>
 
 			<br>
-			<!-- Break -->
 			<div class="12u$">
 				<ul class="actions">
 					<li><a href="{{ url_for('editdeleteusers') }}"><input type="button" value="Log In" class="alt"></a>
@@ -50,7 +46,6 @@
 					
 				</ul>
 			</div>
-			<!-- </div> -->
 		</center>
 	</form>
 
@@ -76,7 +71,5 @@
 	<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/util.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
-	
 </body>
-
 </html>
