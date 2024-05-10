@@ -12,12 +12,14 @@ import shutil
 import pandas as pd
 from zipfile import ZipFile
 import threading
+import cv2
 from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
 from OOP.Detection.Classification import DebrisAnalyzer  
 from OOP.Detection.conversion import convert_fits_to_image
 from OOP.Detection.images_Preprocessing.Otsu_Thresholding import otsu_thresholding_folder 
 from OOP.Detection.images_Preprocessing.iterative_Threshholding import iterative_thresholding_folder
+from OOP.Detection.object_labeling import detect_objects
 
 app = Flask(__name__)
 
@@ -189,6 +191,7 @@ def project():
             for file in files:
                 if file.filename.lower().endswith('.fits'):
                     fits_files.append(file)
+                    filename = file.name
 
             if not fits_files:
                 flash('No FITS files uploaded', 'error')
@@ -201,6 +204,16 @@ def project():
             new_project = Project(project_id=str(uuid.uuid4()), projectname=projname, source=source, detection=csv_content, acc_id=acc_id)
             db.session.add(new_project)
             db.session.commit()
+
+            # Check if detection is selected
+            if request.form.get('detect'):
+
+                # Detect objects in the binary image
+                binary_image = cv2.imread(os.path.join('iterat_images', filename), cv2.IMREAD_GRAYSCALE)
+                detected_objects, annotated_image = detect_objects(binary_image)
+                # Create HTML page for output and provide option to download
+                return render_template('detection_output.html', detected_objects=detected_objects, annotated_image=annotated_image )
+            
           
             # Flash success message
             flash('Project created successfully', 'success')
@@ -249,10 +262,6 @@ def process_fits_files(fits_files):
         with open(csv_file_path, 'rb') as csv_file:
             csv_content = csv_file.read()
 
-        # Clean up temporary directories
-        shutil.rmtree(images_directory)
-        shutil.rmtree(otsu_images)
-        shutil.rmtree(iterat_images)
 
         return csv_content
     else:

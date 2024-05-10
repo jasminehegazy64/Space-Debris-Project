@@ -7,36 +7,15 @@
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    <style>
-        .container {
-            max-width: 100%;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
 </head>
 
 <body class="subpage">
 
-     <!-- Header -->
-     <header id="header">
+    <!-- Header -->
+    <header id="header">
         <div class="inner">
-			<a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43"></a>
+            <a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}"
+                    alt="logo" width="45" height="43"></a>
             <nav id="nav"><a href="{{ url_for('index') }}">Home</a>
                 <a href="{{ url_for('documentation') }}">Documentation</a>
                 <a href="{{ url_for('contactus') }}">Contact Us</a>
@@ -49,39 +28,26 @@
         </div>
     </header><!-- Banner -->
     <section id="banner">
-        <h1>Reports</h1>
+        <h1>Detection Output</h1>
     </section>
-    <br>
-    <!-- Table Container -->
-    <div class="table-wrapper">
-        <!-- <table class="alt"> -->
-        <!-- Table -->
-        <div class="container">
-            <table>
-                <tr>
-                    <th>Project Name</th>
-                    <th>Date</th>
-                    <th>Detection</th>
-                    <th>Tracking</th>
-                    <th>Full Report</th>
-                </tr>
-                {% for project in projects %}
-                <tr>
-                    <td>{{ project.projectname }}</td>
-                    <td>{{ project.date }}</td>
-                    <td><a href="{{ url_for('view_csv', project_id=project.project_id) }}">View CSV</a>
-                        {% if project.detection %}
-        {% endif %}
-        <a href="{{ url_for(detection_output) }}">View CSV</a>
-                    </td>
-                    <td><a href="{{ url_for('fullreport', project_id=project.project_id) }}"><input type="button" value="Full Report"></a></td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
 
-    </div>
-    <br>
+    <section id="main" class="wrapper">
+        <div class="inner">
+            <h2>Detected Objects</h2>
+            <ul>
+                {% for object in detected_objects %}
+                <li>{{ object }}</li>
+                {% endfor %}
+            </ul>
+
+            <h2>Annotated Image</h2>
+            <img src="data:image/png;base64,{{ annotated_image }}" alt="Annotated Image">
+            
+            <!-- Add the button to redirect to reports page -->
+            <a href="{{ url_for('reports') }}" class="button">View Reports</a>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer id="footer">
         <div class="inner">
@@ -105,7 +71,7 @@
     <script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/util.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    
+
 </body>
 
 </html>
