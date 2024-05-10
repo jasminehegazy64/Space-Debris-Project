@@ -134,6 +134,9 @@ def reports():
         flash('Please log in to view reports', 'error')
         return redirect(url_for('signin'))
 
+# @app.route('/detection_output')
+# def detection():
+#     return render_template('detection_output.html')
 
 @app.route('/messages')
 def messages():
