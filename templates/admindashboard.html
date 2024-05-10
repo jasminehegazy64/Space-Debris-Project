@@ -27,27 +27,44 @@
         </h1>
 	</section>
 
-	<form method="post" action="#">
-		<center>
-				<br><br>
-			<div class="6u$ 12u$(xsmall)">
-				<input type="email" name="email" id="email" value="" placeholder="Email">
-			</div>
-			<br>
-			<div class="6u 12u$(xsmall)">
-				<input type="text" name="password" id="name" value="" placeholder="Password">
-			</div>
-
-			<br>
-			<div class="12u$">
+	<section id="main" class="wrapper">
+		<div class="inner">
+		  {% with messages=get_flashed_messages(with_categories=true) %}
+			{% if messages %}
+			  {% for category, message in messages %}
+				<div class="alert alert-{{ category }}">{{ message }}</div>
+			  {% endfor %}
+			{% endif %}
+		  {% endwith %}
+  
+		  <form method="post" action="#">
+			<center>
+			  <div class="6u$ 12u$(xsmall)">
+				<input type="text" name="username" id="username" value="" placeholder="Email" />
+			  </div>
+			  <br />
+			  <div class="6u 12u$(xsmall)">
+				<input type="text" name="password" id="name" value="" placeholder="Password" />
+			  </div>
+  
+			  <br />
+			  <div class="12u$">
 				<ul class="actions">
-					<li><a href="{{ url_for('editdeleteusers') }}"><input type="button" value="Log In" class="alt"></a>
-					</li>
-					
+				  <li>
+					<a href="{{ url_for('index') }}"><input type="submit" value="Sign In" class="alt" /></a>
+				  </li>
+				  <br /><br />
+				  No Account?
+				  <br />
+				  <li>
+					<a href="{{ url_for('editdeleteusers') }}"><input type="submit" value="Sign Up" class="alt" /></a>
+				  </li>
 				</ul>
-			</div>
-		</center>
-	</form>
+			  </div>
+			</center>
+		  </form>
+		</div>
+	  </section>
 
 	<footer id="footer">
 		<div class="inner">
