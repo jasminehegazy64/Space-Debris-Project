@@ -53,7 +53,7 @@ app.secret_key = '0'
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('signin.html')
 
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
