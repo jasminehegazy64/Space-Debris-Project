@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, redirect, flash, session, url_for
+from flask import Flask, render_template, request, redirect, flash, session, url_for, jsonify
 from flask import send_file, make_response
 from werkzeug.utils import secure_filename
+from sqlalchemy import func
 import os
 from flask_sqlalchemy import SQLAlchemy
 import base64
@@ -26,15 +27,15 @@ from OOP.Tracking.optical_flow_fernback import OpticalFlowAnalyzer
 
 app = Flask(__name__)
 
-# # MySQL Configuration
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Happylola.123@localhost/espacio'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# db = SQLAlchemy(app)
-
 # MySQL Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:salmabaligh123@localhost/espacio'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Happylola.123@localhost/espacio'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+# # MySQL Configuration
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:salmabaligh123@localhost/espacio'
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# db = SQLAlchemy(app)
 
 # Define your AccountInfo model
 class AccountInfo(db.Model):
@@ -56,19 +57,30 @@ class Project(db.Model):
     tracking = db.Column(db.LargeBinary)
     acc_id = db.Column(db.Integer, db.ForeignKey('account_info.acc_id'))
 
+# Define your SQLAlchemy model for the contact messages
+class ContactMessage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    email = db.Column(db.String(100))
+    category = db.Column(db.String(50))
+    priority = db.Column(db.String(20))
+    copy = db.Column(db.Boolean)
+    message = db.Column(db.Text)
+    acc_id = db.Column(db.Integer, db.ForeignKey('account_info.acc_id'))
+
+
 # Set the secret key for session management and flashing messages
 app.secret_key = '0'
 
 @app.route('/')
 def index():
     return render_template('index.html')
-
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
     if request.method == 'POST':
-        email = request.form['email']
+        email = request.form['email'].strip()  # Trim whitespace
         password = request.form['password']
-        user = AccountInfo.query.filter_by(email=email).first()
+        user = AccountInfo.query.filter(func.lower(AccountInfo.email) == func.lower(email)).first()  # Case-insensitive email comparison
         if user and check_password_hash(user.acc_password, password):
             session['acc_id'] = user.acc_id
             flash('Logged in successfully!', 'success')
@@ -96,6 +108,7 @@ def signup():
 
         flash('Your account has been created! You can now sign in.', 'success')
         return redirect(url_for('signin'))
+
     return render_template('signup.html')
 
 @app.route('/document')
@@ -108,7 +121,27 @@ def aboutus():
 
 @app.route('/account')
 def account():
-    return render_template('account.html')
+    if 'acc_id' in session:
+        # Fetch the account information for the current user
+        acc_id = session['acc_id']
+        user = AccountInfo.query.filter_by(acc_id=acc_id).first()
+        
+        if user:
+            # Pass the user information to the template
+            return render_template('account.html', user=user)
+        else:
+            flash('Account information not found', 'error')
+            return redirect(url_for('signin'))
+    else:
+        flash('Please log in to view your account', 'error')
+        return redirect(url_for('signin'))
+
+@app.route('/signout')
+def signout():
+    # Clear the session data
+    session.clear()
+    # Redirect to the home page or any other desired page
+    return redirect(url_for('index'))
 
 @app.route('/admindashboard')
 def admindashboard():
@@ -118,9 +151,32 @@ def admindashboard():
 def allreports():
     return render_template('allreports.html')
 
-@app.route('/contactus')
+@app.route('/contactus', methods=['GET', 'POST'])
 def contactus():
-    return render_template('contactus.html')
+    if request.method == 'POST':
+        if 'acc_id' in session:
+            name = request.form['name']
+            email = request.form['email']
+            category = request.form['category']
+            priority = request.form['priority']
+            copy = 'copy' in request.form  # Check if copy checkbox is checked
+            message = request.form['message']
+            acc_id = session['acc_id']
+        
+            # Create a new ContactMessage object and save it to the database
+            new_message = ContactMessage(name=name, email=email, category=category, priority=priority, copy=copy, message=message, acc_id=acc_id)
+            db.session.add(new_message)
+            db.session.commit()
+
+            # Return a JSON response indicating success
+            return jsonify({'message': 'Message sent successfully'})
+        else:
+            flash('Please log in to create a project', 'error')
+            return redirect(url_for('signin'))  # Redirect to login page if user is not logged in
+    else:
+        return render_template('contactus.html')
+
+
 
 @app.route('/editdeleteusers')
 def editdeleteusers():
@@ -167,6 +223,23 @@ def messages():
             # db.session.commit()
 
 
+from flask import send_file
+
+@app.route('/download_video/<project_id>')
+def download_video(project_id):
+    # Fetch the project by its ID
+    project = Project.query.get(project_id)
+    if project:
+        # Create a response containing the video data
+        response = make_response(project.tracking)
+        # Set the Content-Disposition header to specify the filename
+        response.headers['Content-Disposition'] = f'attachment; filename=project_video.mp4'
+        # Set the content type
+        response.headers['Content-Type'] = 'video/mp4'
+        return response  # Return the response object
+    else:
+        flash('Project not found', 'error')
+        return redirect(url_for('reports'))
 
 
 
@@ -253,7 +326,7 @@ def project():
 
                     
                     analyzer = OpticalFlowAnalyzer('OG.MP4', 'fernbackOUT.MP4')
-                    analyzer.process_video()
+                    analyzer.process_video('track.csv')
 
                     # Read the generated video file as binary data
                     with open('fernbackOUT.MP4', 'rb') as video_file:

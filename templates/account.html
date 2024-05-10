@@ -46,24 +46,28 @@
                     <div class="row uniform">
 
                         <div class="6u 12u$(xsmall)">
-                            <span type="text" name="fname" id="fname" value="" placeholder="fname">Your First Name
-                            </span>
+                            <span type="text" name="fname" id="fname" placeholder="fname">{{ user.first_name }}</span>
                         </div>
                         <div class="6u$ 12u$(xsmall)">
-                            <span type="lname" name="lname" id="lname" value="" placeholder="lname"> Your Last Name
-                            </span>
+                            <span type="text" name="lname" id="lname" placeholder="lname">{{ user.last_name }}</span>
                         </div>
                         <div class="6u 12u$(xsmall)">
-                            <span type="email" name="email" id="email" value="" placeholder="email"> Your Email</span>
+                            <span type="email" name="email" id="email" placeholder="email">{{ user.email }}</span>
                         </div>
                         <div class="6u$ 12u$(xsmall)">
-                            <span type="text" name="age" id="age" value="" placeholder="age"> Your Age</span>
+                            <span type="text" name="age" id="age" placeholder="age">{{ user.age }}</span>
                         </div>
+                        
                         <div class="12u$">
                             <center>
-                                <ul class="actions">
-                                    <li><a href="{{ url_for('signin') }}"><input type="button" value="Sign Out" class="alt"></a></li>
-                                </ul>
+                                <div class="12u$">
+                                    <center>
+                                        <ul class="actions">
+                                            <li><a href="{{ url_for('signout') }}"><input type="button" value="Sign Out" class="alt"></a></li>
+                                        </ul>
+                                    </center>
+                                </div>
+                                
                             </center>
                         </div>
                     </div>

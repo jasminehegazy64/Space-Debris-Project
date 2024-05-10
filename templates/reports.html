@@ -58,7 +58,6 @@
             <table>
                 <tr>
                     <th>Project Name</th>
-                    <th>Date</th>
                     <th>Detection</th>
                     <th>Tracking</th>
                     <th>Full Report</th>
@@ -66,7 +65,6 @@
                 {% for project in projects %}
                 <tr>
                     <td>{{ project.projectname }}</td>
-                    <td>{{ project.date }}</td>
                     <td><a href="{{ url_for('view_csv', project_id=project.project_id) }}">View CSV</a>
                         
                         <td><a href="{{ url_for('download_video', project_id=project.project_id) }}">Download Tracking Video</a></td>
@@ -76,29 +74,6 @@
             </table>
         </div>
 
-    <div class="table-wrapper">
-      <div class="container">
-        <table>
-          <tr>
-            <th>Project Name</th>
-            <th>Detection</th>
-            <th>Tracking</th>
-            <th>Full Report</th>
-          </tr>
-          {% for project in projects %}
-            <tr>
-              <td>{{ project.projectname }}</td>
-              <td>{{ project.date }}</td>
-              <td>
-                <a href="{{ url_for('view_csv', project_id=project.project_id) }}">View CSV</a>
-              </td>
-              <td>
-                <a href="{{ url_for('fullreport', project_id=project.project_id) }}"><input type="button" value="Full Report" /></a>
-              </td>
-            </tr>
-          {% endfor %}
-        </table>
-      </div>
     </div>
     <br />
 
