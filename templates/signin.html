@@ -17,7 +17,14 @@
         <div class="inner">
             <a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}"
                     alt="logo" width="45" height="43"></a>
+<<<<<<< HEAD
             <nav id="nav">
+=======
+            <nav id="nav"><a href="{{ url_for('index') }}">Home</a> 
+                 <a href="{{ url_for('documentation') }}">Documentation</a> {% endcomment %}
+                 <a href="{{ url_for('contactus') }}">Contact Us</a> {% endcomment %}
+                 <a href="{{ url_for('aboutus') }}">About Us</a> {% endcomment %}
+>>>>>>> 3f075c0eb2436cd2a70057aea5cfe32dd8925b2e
                 <a href="{{ url_for('signin') }}">Sign In</a>
                 <a href="{{ url_for('signup') }}">Sign Up</a>
                 <a href="{{ url_for('admindashboard') }}">Admin Dashboard</a>
