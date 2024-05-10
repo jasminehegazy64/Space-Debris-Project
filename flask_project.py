@@ -8,6 +8,7 @@ import uuid
 import io
 import zipfile
 import tempfile
+import time
 import shutil
 import pandas as pd
 from zipfile import ZipFile
@@ -179,6 +180,24 @@ def view_csv(project_id):
         flash('Project not found', 'error')
         return redirect(url_for('reports'))
 
+  # Add this import statement at the top of your file
+
+def all_files_uploaded(files):
+    # Check if all files are uploaded
+    for file in files:
+        if not file:  # Check if file is None
+            return None
+    # Create a temporary directory to store files
+    temp_dir = "fits_directory"
+    os.makedirs(temp_dir, exist_ok=True)
+    # Save uploaded files in the temporary directory
+    for file in files:
+        file_path = os.path.join(temp_dir, secure_filename(file.filename))
+        file.save(file_path)
+    return temp_dir
+
+
+
 @app.route('/project', methods=['GET', 'POST'])
 def project():
     if request.method == 'POST':
@@ -188,40 +207,37 @@ def project():
             files = request.files.getlist('dataset')  # Use getlist for multiple files
             acc_id = session['acc_id']
 
-            # Prepare a temporary directory for processing files
-            fits_files = []
-
-            for file in files:
-                if file.filename.lower().endswith('.fits'):
-                    fits_files.append(file)
-                    filename = file.name
-
-            if not fits_files:
+            # Ensure all files are uploaded before proceeding
+            temp_dir = all_files_uploaded(files)
+            if not temp_dir:
                 flash('No FITS files uploaded', 'error')
                 return redirect(url_for('project'))
 
-            # Process FITS files
-            csv_content = process_fits_files(fits_files)
+            try:
+                # Process FITS files
+                csv_content = process_fits_files( temp_dir)
 
-            # Save the CSV file content to the database
-            new_project = Project(project_id=str(uuid.uuid4()), projectname=projname, source=source, detection=csv_content, acc_id=acc_id)
-            db.session.add(new_project)
-            db.session.commit()
+                # Save the CSV file content to the database
+                new_project = Project(project_id=str(uuid.uuid4()), projectname=projname, source=source, detection=csv_content, acc_id=acc_id)
+                db.session.add(new_project)
+                db.session.commit()
 
-            # Check if detection is selected
-            if request.form.get('detect'):
+                # # Check if detection is selected
+                # if request.form.get('detect'):
+                #     # Detect objects in the binary image
+                #     binary_image = cv2.imread(os.path.join(temp_dir, 'iterat_images', filename), cv2.IMREAD_GRAYSCALE)
+                #     detected_objects, annotated_image = detect_objects(binary_image)
+                #     # Create HTML page for output and provide option to download
+                #     return render_template('detection_output.html', detected_objects=detected_objects, annotated_image=annotated_image)
 
-                # Detect objects in the binary image
-                binary_image = cv2.imread(os.path.join('iterat_images', filename), cv2.IMREAD_GRAYSCALE)
-                detected_objects, annotated_image = detect_objects(binary_image)
-                # Create HTML page for output and provide option to download
-                return render_template('detection_output.html', detected_objects=detected_objects, annotated_image=annotated_image )
-            
-          
-            # Flash success message
-            flash('Project created successfully', 'success')
+                # Flash success message
+                flash('Project created successfully', 'success')
 
-            return redirect(url_for('reports'))
+                return redirect(url_for('reports'))
+            finally:
+                # Delete temporary directory and its contents
+                #shutil.rmtree(temp_dir)
+                ("ay haga")
         else:
             flash('Please log in to create a project', 'error')
             return redirect(url_for('signin'))  # Redirect to login page if user is not logged in
@@ -230,14 +246,14 @@ def project():
 
 
 
-def process_fits_files(fits_files):
-    fits_directory = 'fits_directory'
-    os.makedirs(fits_directory, exist_ok=True)
+def process_fits_files(temp_dir):
+    # fits_directory = 'fits_directory'
+    # os.makedirs(temp_dir, exist_ok=True)
 
-    # Save FITS files in the fits_directory
-    for file in fits_files:
-        file_path = os.path.join(fits_directory, secure_filename(file.filename))
-        file.save(file_path)
+    # # Save FITS files in the fits_directory
+    # for file in temp_dir:
+    #     file_path = os.path.join(fits_directory, secure_filename(file.filename))
+    #     file.save(file_path)
 
     # Create directories for images preprocessing
     images_directory = 'images_directory'
@@ -250,7 +266,7 @@ def process_fits_files(fits_files):
     os.makedirs(iterat_images, exist_ok=True)
 
     # Perform image conversion and preprocessing
-    convert_fits_to_image(fits_directory, images_directory)
+    convert_fits_to_image(temp_dir, images_directory)
     otsu_thresholding_folder(images_directory, otsu_images)
     iterative_thresholding_folder(images_directory, iterat_images)
 
