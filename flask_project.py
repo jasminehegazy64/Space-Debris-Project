@@ -235,15 +235,25 @@ def contactus():
 
     return render_template('contactus.html')
 
+
 @app.route('/fullreport')
 def fullreport():
-    # Assuming your DebrisAnalyzer setup and object_data retrieval here
-    analyzer = DebrisAnalyzer(threshed_directory="OOP\\2024-001", csv_file_path="output.csv")
-    object_data = analyzer.process_images()
-    total_objects = analyzer.get_total_objects(object_data)
+    if 'temp_dir' in session:
+        temp_dir = session['temp_dir']
+        
+        # Use the temporary directory from the session to process images
+        csv_file_path = os.path.join('output.csv')
+        analyzer = DebrisAnalyzer(temp_dir, csv_file_path)
+        object_data = analyzer.process_images()
+        total_objects = analyzer.get_total_objects(object_data)
+        
+        # Render the HTML template and pass total_objects to it
+        return render_template('full_reports.html', total_objects=total_objects)
+    else:
+        flash('No project data found. Please create a project first.', 'error')
+        return redirect(url_for('project'))
 
-    # Render the HTML template and pass total_objects to it
-    return render_template('full_reports.html', total_objects=total_objects)
+
 @app.route('/reports')
 def reports():
     if 'acc_id' in session:
