@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
   <head>
     <title>Reports</title>
@@ -36,7 +37,7 @@
         <a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43" /></a>
         <nav id="nav">
           <a href="{{ url_for('admindashboard') }}">Admin Dashboard</a>
-          <a href="{{ url_for('editdeleteusers') }}">Users</a>
+          <a href="{{ url_for('admin_users') }}">Users</a>
           <a href="{{ url_for('messages') }}">Messages</a>
           <a href="{{ url_for('allreports') }}">Reports</a>
         </nav><a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
@@ -59,66 +60,23 @@
             <th>Edit</th>
             <th>Delete</th>
           </tr>
+          {% for report in reports %}
           <tr>
-            <td>1</td>
-            <td>Jasmine Hegazy</td>
-            <td>space1</td>
-            <td>jasminehegazy@yahoo.com</td>
+            <td>{{ report.project_id }}</td>
+            <td>{{ report.first_name }} {{ report.last_name }}</td>
+            <td>{{ report.projectname }}</td>
+            <td>{{ report.email }}</td>
             <td>
-              <input type="button" value="View" />
+              <a href="{{ url_for('view_report', report_id=report.project_id) }}">View</a>
             </td>
             <td>
-              <input type="button" value="Edit" />
+              <a href="{{ url_for('edit_report', report_id=report.project_id) }}">Edit</a>
             </td>
             <td>
-              <input type="button" value="Delete" />
+              <a href="{{ url_for('delete_report', report_id=report.project_id) }}">Delete</a>
             </td>
           </tr>
-          <tr>
-            <td>2</td>
-            <td>Julia Magdy</td>
-            <td>Trial5</td>
-            <td>juliamagdy@yahoo.com</td>
-            <td>
-              <input type="button" value="View" />
-            </td>
-            <td>
-              <input type="button" value="Edit" />
-            </td>
-            <td>
-              <input type="button" value="Delete" />
-            </td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>Salma Baligh</td>
-            <td>spacee2</td>
-            <td>salmabaligh@yahoo.com</td>
-            <td>
-              <input type="button" value="View" />
-            </td>
-            <td>
-              <input type="button" value="Edit" />
-            </td>
-            <td>
-              <input type="button" value="Delete" />
-            </td>
-          </tr>
-          <tr>
-            <td>4</td>
-            <td>Hana Alaa</td>
-            <td>Triall2</td>
-            <td>hanaalaa@yahoo.com</td>
-            <td>
-              <input type="button" value="View" />
-            </td>
-            <td>
-              <input type="button" value="Edit" />
-            </td>
-            <td>
-              <input type="button" value="Delete" />
-            </td>
-          </tr>
+          {% endfor %}
         </table>
       </div>
     </div>
@@ -136,7 +94,7 @@
               <a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a>
             </li>
             <li>
-              <a href="#" class="icon fa-linkedin"><span class="label">linkedIn</span></a>
+              <a href="#" class="icon fa-linkedin"><span class="label">LinkedIn</span></a>
             </li>
             <li>
               <a href="#" class="icon fa-pinterest-p"><span class="label">Pinterest</span></a>
@@ -148,7 +106,7 @@
         </div>
       </div>
     </footer>
-    <div class="copyright">ESPACIO : Detecting, Tracking, and Collision Prediction of Space Debris</div>
+    <div class="copyright">ESPACIO: Detecting, Tracking, and Collision Prediction of Space Debris</div>
 
     <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>

@@ -1828,6 +1828,17 @@ textarea {
 
 }
 
+  .reply-cell {
+    text-align: center; /* Center aligns the content horizontally */
+    vertical-align: middle; /* Optional: Center aligns vertically */
+  }
+  
+  .reply-form {
+    display: flex; /* Optional: Use flexbox for layout flexibility */
+    justify-content: center; /* Optional: Center aligns form elements horizontally */
+  }
+
+
 a {
 	color: #5385c1;
 	text-decoration: underline;

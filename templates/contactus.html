@@ -6,6 +6,8 @@
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+    <!-- Include jQuery library for AJAX handling -->
+
 </head>
 <body class="subpage">
     <!-- Header -->
@@ -15,7 +17,7 @@
             <nav id="nav">
                 <a href="{{ url_for('index') }}">Home</a>
                 <a href="{{ url_for('documentation') }}">Documentation</a>
-                <a href="{{ url_for('contactus') }}">Contact Us</a>
+                <a href="{{ url_for('contactus') }}" class="active">Contact Us</a>
                 <a href="{{ url_for('aboutus') }}">About Us</a>
                 <a href="{{ url_for('reports') }}">Reports</a>
                 <a href="{{ url_for('account') }}">Account</a>
@@ -26,61 +28,64 @@
     </header>
 
     <section id="banner">
-        <h1>Contact Us</h1>
+        <div class="inner">
+            <h1>Contact Us</h1>
+        </div>
     </section>
 
     <section id="main" class="wrapper">
-      <div class="inner">
-        <form method="post" action="#">
-          <div class="row uniform">
-            <div class="6u 12u$(xsmall)">
-              <input type="text" name="name" id="name" value="" placeholder="Name" />
-            </div>
-            <div class="6u$ 12u$(xsmall)">
-              <input type="email" name="email" id="email" value="" placeholder="Email" />
-            </div>
-            <div class="12u$">
-              <div class="select-wrapper">
-                <select name="category" id="category">
-                  <option value="">- Category -</option>
-                  <option value="1">Having a problem using the website</option>
-                  <option value="1">Need Help</option>
-                  <option value="1">Have any question</option>
-                  <option value="1">Another</option>
-                </select>
-              </div>
-            </div>
-            <div class="4u 12u$(small)">
-              <input type="radio" id="priority-low" name="priority" checked /><label for="priority-low">Low Priority</label>
-            </div>
-            <div class="4u 12u$(small)">
-              <input type="radio" id="priority-normal" name="priority" /><label for="priority-normal">Normal Priority</label>
-            </div>
-            <div class="4u$ 12u$(small)">
-              <input type="radio" id="priority-high" name="priority" /><label for="priority-high">High Priority</label>
-            </div>
-            <div class="6u 12u$(small)">
-              <input type="checkbox" id="copy" name="copy" /><label for="copy">Email me a copy of this message</label>
-            </div>
-            <div class="6u$ 12u$(small)">
-              <input type="checkbox" id="human" name="human" checked /><label for="human">I am a human and not a robot</label>
-            </div>
-            <div class="12u$">
-              <textarea name="message" id="message" placeholder="Enter your message" rows="6"></textarea>
-            </div>
-            <div class="12u$">
-              <ul class="actions">
-                <li>
-                  <input type="submit" value="Send Message" />
-                </li>
-                <li>
-                  <input type="reset" value="Reset" class="alt" />
-                </li>
-              </ul>
-            </div>
-          </div>
-        </form>
-      </div>
+        <div class="inner">
+            <form id="contact-form" method="POST" action="{{ url_for('contactus') }}">
+                <div class="row uniform">
+                    <div class="6u 12u$(xsmall)">
+                        <input type="text" name="name" id="name" placeholder="Name" required>
+                    </div>
+                    <div class="6u$ 12u$(xsmall)">
+                        <input type="email" name="email" id="email" placeholder="Email" required>
+                    </div>
+                    <div class="12u$">
+                        <div class="select-wrapper">
+                            <select name="category" id="category" required>
+                                <option value="">- Category -</option>
+                                <option value="1">Having a problem using the website</option>
+                                <option value="2">Need Help</option>
+                                <option value="3">Have any question</option>
+                                <option value="4">Another</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="4u 12u$(small)">
+                        <input type="radio" id="priority-low" name="priority" value="low" checked>
+                        <label for="priority-low">Low Priority</label>
+                    </div>
+                    <div class="4u 12u$(small)">
+                        <input type="radio" id="priority-normal" name="priority" value="normal">
+                        <label for="priority-normal">Normal Priority</label>
+                    </div>
+                    <div class="4u$ 12u$(small)">
+                        <input type="radio" id="priority-high" name="priority" value="high">
+                        <label for="priority-high">High Priority</label>
+                    </div>
+                    <div class="6u 12u$(small)">
+                        <input type="checkbox" id="copy" name="copy">
+                        <label for="copy">Email me a copy of this message</label>
+                    </div>
+                    <div class="6u$ 12u$(small)">
+                        <input type="checkbox" id="human" name="human" checked>
+                        <label for="human">I am a human and not a robot</label>
+                    </div>
+                    <div class="12u$">
+                        <textarea name="message" id="message" placeholder="Enter your message" rows="6" required></textarea>
+                    </div>
+                    <div class="12u$">
+                        <ul class="actions">
+                            <li><input type="submit" value="Send Message" /></li>
+                            <li><input type="reset" value="Reset" class="alt" id="reset-btn" /></li>
+                        </ul>
+                    </div>
+                </div>
+            </form>
+        </div>
     </section>
 
     <!-- Footer -->
@@ -88,60 +93,54 @@
         <div class="inner">
             <div class="flex">
                 <ul class="icons">
-                    <li>
-                        <a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a>
-                    </li>
-                    <li>
-                        <a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a>
-                    </li>
-                    <li>
-                        <a href="#" class="icon fa-linkedin"><span class="label">linkedIn</span></a>
-                    </li>
-                    <li>
-                        <a href="#" class="icon fa-pinterest-p"><span class="label">Pinterest</span></a>
-                    </li>
-                    <li>
-                        <a href="#" class="icon fa-vimeo"><span class="label">Vimeo</span></a>
-                    </li>
+                    <li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+                    <li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+                    <li><a href="#" class="icon fa-linkedin"><span class="label">LinkedIn</span></a></li>
+                    <li><a href="#" class="icon fa-pinterest-p"><span class="label">Pinterest</span></a></li>
+                    <li><a href="#" class="icon fa-vimeo"><span class="label">Vimeo</span></a></li>
                 </ul>
             </div>
         </div>
     </footer>
 
-    <div id="message-popup" style="display: none;">
-        <!-- Message content will be inserted here -->
-    </div>
+    <!-- Message Popup -->
+    <div id="message-popup" style="display: none;"></div>
 
     <!-- Scripts -->
-    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/util.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const contactForm = document.getElementById('contact-form');
-        contactForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form submission
 
-            // Perform Ajax request to submit the form data
-            fetch(contactForm.action, {
-                method: 'POST',
-                body: new FormData(contactForm)
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Show success message
-                const messagePopup = document.getElementById('message-popup');
-                messagePopup.innerHTML = data.message;
-                messagePopup.style.display = 'block';
-
-                // Reset form fields
-                contactForm.reset();
-            })
-            .catch(error => console.error('Error:', error));
-        });
-    });
-    </script>
 </body>
 </html>
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<script>
+$(document).ready(function() {
+    $('#contact-form').submit(function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // AJAX POST request
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: $(this).serialize(), // Serialize form data
+            success: function(response) {
+                // On success, show success message
+                $('#message-popup').html('<p>' + response.message + '</p>').fadeIn();
+                setTimeout(function() {
+                    $('#message-popup').fadeOut();
+                }, 3000); // Hide message after 3 seconds
+                $('#contact-form')[0].reset(); // Reset form
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    });
+
+    // Function to reset the form
+    $('#reset-btn').click(function() {
+        $('#contact-form')[0].reset();
+    });
+});
+</script>

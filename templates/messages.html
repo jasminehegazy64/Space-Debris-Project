@@ -36,7 +36,7 @@
         <a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43" /></a>
         <nav id="nav">
           <a href="{{ url_for('admindashboard') }}">Admin Dashboard</a>
-          <a href="{{ url_for('editdeleteusers') }}">Users</a>
+          <a href="{{ url_for('admin_users') }}">Users</a>
           <a href="{{ url_for('messages') }}">Messages</a>
           <a href="{{ url_for('allreports') }}">Reports</a>
         </nav><a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
@@ -51,63 +51,42 @@
     <div class="table-wrapper">
       <div class="container">
         <table>
-          <tr>
-            <th>Message ID</th>
-            <th>User Name</th>
-            <th>Email</th>
-            <th>Message</th>
-            <th>Reply</th>
-            <th>Delete</th>
-          </tr>
-          <tr>
-            <td>1</td>
-            <td>Jasmine Hegazy</td>
-            <td>jasminehegazy@yahoo.com</td>
-            <td>Great Website!</td>
-            <td>
-              <input type="action" value="Reply" />
-            </td>
-            <td>
-              <input type="button" value="Delete" />
-            </td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Julia Magdy</td>
-            <td>juliamagdy@yahoo.com</td>
-            <td>AMAZING!!</td>
-            <td>
-              <input type="action" value="Reply" />
-            </td>
-            <td>
-              <input type="button" value="Delete" />
-            </td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>Salma Baligh</td>
-            <td>salmabaligh@yahoo.com</td>
-            <td>Impressed with the functionalities!</td>
-            <td>
-              <input type="action" value="Reply" />
-            </td>
-            <td>
-              <input type="button" value="Delete" />
-            </td>
-          </tr>
-          <tr>
-            <td>4</td>
-            <td>Hana Alaa</td>
-            <td>hanaalaa@yahoo.com</td>
-            <td>I Love ITT!</td>
-            <td>
-              <input type="action" value="Reply" />
-            </td>
-            <td>
-              <input type="button" value="Delete" />
-            </td>
-          </tr>
-        </table>
+          <!-- Modify your table section in messages.html -->
+<div class="table-wrapper">
+  <div class="container">
+    <table>
+      <tr>
+        <th>Message ID</th>
+        <th>User Name</th>
+        <th>Email</th>
+        <th>Message</th>
+        <th>Reply</th>
+        <th>Delete</th>
+      </tr>
+      {% for message in messages %}
+      <tr>
+        <td>{{ message.id }}</td>
+        <td>{{ message.name }}</td>
+        <td>{{ message.email }}</td>
+        <td>{{ message.message }}</td>
+        <td class="reply-cell">
+          <form class="reply-form" data-message-id="{{ message.id }}">
+            <input type="text" name="reply_message" placeholder="Reply message">
+            <input type="submit" value="Reply">
+          </form>
+        </td>
+        <td>
+          <form class="delete-form" data-message-id="{{ message.id }}">
+            <input type="submit" value="Delete">
+          </form>
+        </td>
+
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
       </div>
     </div>
     <br />
@@ -145,3 +124,54 @@
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   </body>
 </html>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    // Handle reply form submission via AJAX
+    $('.reply-form').submit(function(event) {
+      event.preventDefault();
+      var messageID = $(this).data('message-id');
+      var replyMessage = $(this).find('input[name="reply_message"]').val();
+      
+      $.ajax({
+        type: 'POST',
+        url: `/reply_message/${messageID}`, 
+        data: { reply_message: replyMessage },
+        success: function(response) {
+          alert(response.message); 
+          $('#message-' + messageID).remove();
+          // Remove the message row from the table upon success
+          location.reload();// Display success message (adjust as needed)
+          // Optionally update the UI or perform other actions upon success
+        },
+        error: function(xhr, status, error) {
+          alert('An error occurred while processing your request.');
+          console.error(error);
+        }
+      });
+    });
+
+    // Handle delete form submission via AJAX
+    $('.delete-form').submit(function(event) {
+      event.preventDefault();
+      var messageID = $(this).data('message-id');
+      
+      $.ajax({
+        type: 'POST',
+        url: `/delete_message/${messageID}`,
+        success: function(response) {
+          alert(response.message); // Display success message (adjust as needed)
+          // Remove the message row from the table upon success
+          $('#message-' + messageID).remove();
+          location.reload();
+
+        },
+        error: function(xhr, status, error) {
+          alert('An error occurred while processing your request.');
+          console.error(error);
+        }
+      });
+    });
+  });
+  
+</script>

@@ -11,7 +11,9 @@ import zipfile
 import tempfile
 import time
 import shutil
+from sqlalchemy.orm import relationship
 import pandas as pd
+from flask_mail import Mail, Message
 from zipfile import ZipFile
 import threading
 import cv2
@@ -47,6 +49,11 @@ class AccountInfo(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     acc_password = db.Column(db.String(250), nullable=False)
     project_count = db.Column(db.Integer, default=0)
+    # Relationship to projects
+    projects = relationship('Project', backref='account', lazy=True)
+    # Relationship to contact messages
+    contact_messages = relationship('ContactMessage', backref='account', lazy=True, cascade='all, delete-orphan')
+
 
 # Define your Project model
 class Project(db.Model):
@@ -67,7 +74,7 @@ class ContactMessage(db.Model):
     priority = db.Column(db.String(20))
     copy = db.Column(db.Boolean)
     message = db.Column(db.Text)
-    acc_id = db.Column(db.Integer, db.ForeignKey('account_info.acc_id'))
+    acc_id = db.Column(db.Integer, db.ForeignKey('account_info.acc_id', ondelete='CASCADE'))
 
 
 # Set the secret key for session management and flashing messages
@@ -132,14 +139,30 @@ def aboutus():
     return render_template('aboutus.html')
 
 
-@app.route('/users')
+from flask import request, redirect, url_for
+
+@app.route('/admin_users', methods=['GET', 'POST'])
 def admin_users():
     if 'admin' in session:
+        if request.method == 'POST':
+            acc_id = request.form.get('acc_id')
+            if acc_id:
+                user = AccountInfo.query.filter_by(acc_id=acc_id).first()
+                if user:
+                    db.session.delete(user)
+                    db.session.commit()
+                    flash(f'User {user.first_name} {user.last_name} deleted successfully', 'success')
+                    return redirect(url_for('admin_users'))
+                else:
+                    flash('User not found', 'error')
+                    return redirect(url_for('admin_users'))
+
         users = AccountInfo.query.all()  # Fetch all user data from the database
         return render_template('admin_users.html', users=users)
     else:
         flash('Unauthorized access!', 'error')
         return redirect(url_for('signin'))
+
 
 @app.route('/account')
 def account():
@@ -171,77 +194,45 @@ def admindashboard():
 
 @app.route('/allreports')
 def allreports():
-    return render_template('allreports.html')
+    if 'admin' in session:
+        # Query the database to get all reports
+        reports = db.session.query(
+            Project.project_id,
+            AccountInfo.first_name,
+            AccountInfo.last_name,
+            Project.projectname,
+            AccountInfo.email
+        ).join(AccountInfo, Project.acc_id == AccountInfo.acc_id).all()
+        
+        # Pass the reports to the template
+        return render_template('allreports.html', reports=reports)
+    else:
+        flash('Unauthorized access!', 'error')
+        return redirect(url_for('signin'))
+
 
 @app.route('/contactus', methods=['GET', 'POST'])
 def contactus():
-    if request.method == 'POST':
-        if 'acc_id' in session:
+        if request.method == 'POST':
+        # Process form submission
             name = request.form['name']
             email = request.form['email']
             category = request.form['category']
             priority = request.form['priority']
             copy = 'copy' in request.form  # Check if copy checkbox is checked
             message = request.form['message']
-            acc_id = session['acc_id']
-        
+            
+            # Simulate saving to database (replace with actual DB operations)
             # Create a new ContactMessage object and save it to the database
             new_message = ContactMessage(name=name, email=email, category=category, priority=priority, copy=copy, message=message, acc_id=acc_id)
             db.session.add(new_message)
             db.session.commit()
 
-            # Return a JSON response indicating success
+            # Here, just returning a success message
             return jsonify({'message': 'Message sent successfully'})
-        else:
-            flash('Please log in to create a project', 'error')
-            return redirect(url_for('signin'))  # Redirect to login page if user is not logged in
-    else:
+
         return render_template('contactus.html')
 
-@app.route('/edit_user/<int:acc_id>', methods=['GET', 'POST'])
-def edit_user(acc_id):
-    if 'admin' not in session:
-        flash('Unauthorized access!', 'error')
-        return redirect(url_for('signin'))
-
-    user = AccountInfo.query.get(acc_id)
-    if not user:
-        flash('User not found', 'error')
-        return redirect(url_for('admin_users'))
-
-    if request.method == 'POST':
-        # Handle editing user details here
-        user.first_name = request.form['first_name']
-        user.last_name = request.form['last_name']
-        user.email = request.form['email']
-        db.session.commit()
-        flash('User details updated successfully', 'success')
-        return redirect(url_for('admin_users'))
-
-    return render_template('edit_user.html', user=user)
-
-@app.route('/delete_user/<int:acc_id>', methods=['GET', 'POST'])
-def delete_user(acc_id):
-    if 'admin' not in session:
-        flash('Unauthorized access!', 'error')
-        return redirect(url_for('signin'))
-
-    user = AccountInfo.query.get(acc_id)
-    if not user:
-        flash('User not found', 'error')
-        return redirect(url_for('admin_users'))
-
-    if request.method == 'POST':
-        db.session.delete(user)
-        db.session.commit()
-        flash('User deleted successfully', 'success')
-        return redirect(url_for('admin_users'))
-
-    return render_template('admin_users.html')
-
-@app.route('/editdeleteusers')
-def editdeleteusers():
-    return render_template('editdeleteusers.html')
 
 @app.route('/fullreport')
 def fullreport():
@@ -262,11 +253,43 @@ def reports():
 # @app.route('/detection_output')
 # def detection():
 #     return render_template('detection_output.html')
-
+# Initialize Flask-Mail
+mail = Mail(app)
 @app.route('/messages')
 def messages():
-    return render_template('messages.html')
+    messages = ContactMessage.query.all()
+    return render_template('messages.html', messages=messages)
 
+@app.route('/reply_message/<int:message_id>', methods=['POST'])
+def reply_message(message_id):
+    reply_message = request.form.get('reply_message')
+    message = ContactMessage.query.get(message_id)
+    
+    if message:
+        # Send email to the user (replace with actual email sending code)
+        # Example using Flask-Mail:
+        # msg = Message('Reply from Admin', sender='admin@example.com', recipients=[message.email])
+        # msg.body = reply_message
+        # mail.send(msg)
+        
+        # Update message in database if needed
+        message.reply = reply_message
+        db.session.commit()
+        
+        return jsonify({'message': f'Reply sent to {message.name} at {message.email}.'})
+    else:
+        return jsonify({'message': 'Message not found.'}), 404
+
+@app.route('/delete_message/<int:message_id>', methods=['POST'])
+def delete_message(message_id):
+    message = ContactMessage.query.get(message_id)
+    
+    if message:
+        db.session.delete(message)
+        db.session.commit()
+        return jsonify({'message': f'Message from {message.name} deleted successfully.'})
+    else:
+        return jsonify({'message': 'Message not found.'}), 404
 # def process_files_async(files, projname, source, acc_id):
 # Function to process files asynchronously
             # zip_buffer = io.BytesIO()
@@ -392,15 +415,19 @@ def project():
                     # Read the generated video file as binary data
                     with open('fernbackOUT.MP4', 'rb') as video_file:
                         video_data = video_file.read()
+                
+                else:
+                    video_data = None  # Ensure video_data is initialized
+
 
                 new_project = Project(project_id=str(uuid.uuid4()), projectname=projname, source=source, detection=csv_content, tracking=video_data, acc_id=acc_id)
                 db.session.add(new_project)
                 db.session.commit()
 
-                # Increment the project count for the user
+                # Increment the project count for the user if user exists
                 user = AccountInfo.query.filter_by(acc_id=acc_id).first()
                 if user:
-                    user.project_count += 1
+                    user.project_count = user.project_count + 1 if user.project_count is not None else 1
                     db.session.commit()
                
                 flash('Project created successfully', 'success')
