@@ -210,26 +210,30 @@ def allprojects():
 
 @app.route('/contactus', methods=['GET', 'POST'])
 def contactus():
-        if request.method == 'POST':
+    if request.method == 'POST':
+        # Ensure user is logged in and has an acc_id in session
+        if 'acc_id' in session:
+            acc_id = session['acc_id']
+        else:
+            return jsonify({'error': 'User not logged in'}), 401  # Unauthorized
+
         # Process form submission
-            name = request.form['name']
-            email = request.form['email']
-            category = request.form['category']
-            priority = request.form['priority']
-            copy = 'copy' in request.form  # Check if copy checkbox is checked
-            message = request.form['message']
-            
-            # Simulate saving to database (replace with actual DB operations)
-            # Create a new ContactMessage object and save it to the database
-            new_message = ContactMessage(name=name, email=email, category=category, priority=priority, copy=copy, message=message, acc_id=acc_id)
-            db.session.add(new_message)
-            db.session.commit()
+        name = request.form.get('name', '')
+        email = request.form.get('email', '')
+        category = request.form.get('category', '')
+        priority = request.form.get('priority', '')
+        copy = 'copy' in request.form
+        message = request.form.get('message', '')
 
-            # Here, just returning a success message
-            return jsonify({'message': 'Message sent successfully'})
+        # Save to database
+        new_message = ContactMessage(name=name, email=email, category=category, priority=priority, copy=copy, message=message, acc_id=acc_id)
+        db.session.add(new_message)
+        db.session.commit()
 
-        return render_template('contactus.html')
+        # Return success message
+        return jsonify({'message-popup': 'Message sent successfully'})
 
+    return render_template('contactus.html')
 
 @app.route('/fullreport')
 def fullreport():
@@ -259,7 +263,7 @@ def messages():
 
 @app.route('/reply_message/<int:message_id>', methods=['POST'])
 def reply_message(message_id):
-    reply_message = request.form.get('reply_message')
+    reply_message = request.form.get('reply_message','')
     message = ContactMessage.query.get(message_id)
     
     if message:
@@ -269,9 +273,9 @@ def reply_message(message_id):
         # msg.body = reply_message
         # mail.send(msg)
         
-        # Update message in database if needed
-        message.reply = reply_message
-        db.session.commit()
+        # # Update message in database if needed
+        # message.reply = reply_message
+        # db.session.commit()
         
         return jsonify({'message': f'Reply sent to {message.name} at {message.email}.'})
     else:

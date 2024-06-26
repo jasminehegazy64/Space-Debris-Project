@@ -3,11 +3,9 @@
 <head>
     <title>Contact Us</title>
     <meta charset="utf-8" />
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
-    <!-- Include jQuery library for AJAX handling -->
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="subpage">
     <!-- Header -->
@@ -104,43 +102,48 @@
     </footer>
 
     <!-- Message Popup -->
-    <div id="message-popup" style="display: none;"></div>
+    <div id="message-popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.8); color: white; padding: 20px; border-radius: 5px; text-align: center;"></div>
 
     <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/util.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
-</body>
-</html>
-<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
-<script>
-$(document).ready(function() {
-    $('#contact-form').submit(function(event) {
-        event.preventDefault(); // Prevent default form submission
+    <script>
+    $(document).ready(function() {
+        $('#contact-form').submit(function(event) {
+            event.preventDefault(); // Prevent default form submission
 
-        // AJAX POST request
-        $.ajax({
-            type: 'POST',
-            url: $(this).attr('action'),
-            data: $(this).serialize(), // Serialize form data
-            success: function(response) {
-                // On success, show success message
-                $('#message-popup').html('<p>' + response.message + '</p>').fadeIn();
-                setTimeout(function() {
-                    $('#message-popup').fadeOut();
-                }, 3000); // Hide message after 3 seconds
-                $('#contact-form')[0].reset(); // Reset form
-            },
-            error: function(error) {
-                console.error('Error:', error);
-            }
+            // AJAX POST request
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: $(this).serialize(), // Serialize form data
+                success: function(response) {
+                    // On success, show success message as popup
+                    $('#message-popup').html('<p>' + response['message-popup'] + '</p>').fadeIn();
+
+                    // Hide message after 3 seconds
+                    setTimeout(function() {
+                        $('#message-popup').fadeOut();
+                    }, 3000);
+
+                    // Reset form
+                    $('#contact-form')[0].reset();
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+
+        // Function to reset the form
+        $('#reset-btn').click(function() {
+            $('#contact-form')[0].reset();
         });
     });
+    </script>
+</body>
+</html>
 
-    // Function to reset the form
-    $('#reset-btn').click(function() {
-        $('#contact-form')[0].reset();
-    });
-});
-</script>
+ 

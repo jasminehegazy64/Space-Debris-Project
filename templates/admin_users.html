@@ -40,7 +40,7 @@
                     <td>{{ user.acc_id }}</td>
                     <td>{{ user.first_name }} {{ user.last_name }}</td>
                     <td>{{ user.email }}</td>
-                    <td>{{ user.reports|length }}</td> <!-- Assumes a relationship between users and reports -->
+                    <td>{{ user.project_count}}</td> <!-- Assumes a relationship between users and reports -->
                     <td>
                       <form method="POST" action="{{ url_for('admin_users') }}">
                           <input type="hidden" name="acc_id" value="{{ user.acc_id }}">
