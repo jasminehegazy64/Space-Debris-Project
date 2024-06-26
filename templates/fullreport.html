@@ -27,30 +27,31 @@
     </section>
 
     <section id="main" class="wrapper">
-        <div class="inner">
-            <form method="post" action="#">
-                <center>
-                    <h3>Classification and Detection</h3>
-                    <div class="row uniform">
-                        <div class="6u 12u$(xsmall)">
-                            <span>Number of Detected Debris: {{ total_objects }}</span>
-                        </div>
-                        <div class="6u$ 12u$(xsmall)">
-                            <span>Average Size :</span>
-                        </div>
-                        <div class="6u 12u$(xsmall)">
-                            <span>Average Velocity :</span>
-                        </div>
-                        <div class="6u$ 12u$(xsmall)">
-                            <span>Coordinates :</span>
-                        </div>
-                        <div class="6u$ 12u$(xsmall)">
-                            <span>Time Interval :</span>
-                        </div>
-                    </div>
-                </center>
-            </form>
-        </div>
+      <div class="inner">
+        <form method="post" action="#">
+          <center>
+            <h3>Classification and Detection</h3>
+            <div class="row uniform">
+              <div class="6u 12u$(xsmall)">
+                <span type="text" name="fname" id="fname" value="" placeholder="fname">Number of Detected Debris :</span>
+                
+              </div>
+              <div class="6u$ 12u$(xsmall)">
+                <span type="lname" name="lname" id="lname" value="" placeholder="lname">Average Size :</span>
+              </div>
+              <div class="6u 12u$(xsmall)">
+                <span type="email" name="email" id="email" value="" placeholder="email">Average Velocity :</span>
+              </div>
+              <div class="6u$ 12u$(xsmall)">
+                <span type="text" name="age" id="age" value="" placeholder="age">Coordinates :</span>
+              </div>
+              <div class="6u$ 12u$(xsmall)">
+                <span type="text" name="age" id="age" value="" placeholder="age">Time Interval :</span>
+              </div>
+            </div>
+          </center>
+        </form>
+      </div>
     </section>
 
     <!-- Additional sections for Tracking Trajectories and Collision Prediction -->

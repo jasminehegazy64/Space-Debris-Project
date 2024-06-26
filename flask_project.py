@@ -238,22 +238,53 @@ def contactus():
 
 @app.route('/fullreport')
 def fullreport():
-    if 'temp_dir' in session:
-        temp_dir = session['temp_dir']
+    if 'acc_id' in session:  # Check if user is logged in
+        projname = request.form['projname']
+        source = request.form['source']
+        files = request.files.getlist('dataset')  # Use getlist for multiple files
+        acc_id = session['acc_id']
+      
+
+        # Store project details in session for later use on reports page
+        session['project_details'] = {
+        'projname': projname,
+        'source': source,
         
-        # Use the temporary directory from the session to process images
-        csv_file_path = os.path.join('output.csv')
-        analyzer = DebrisAnalyzer(temp_dir, csv_file_path)
-        object_data = analyzer.process_images()
-        total_objects = analyzer.get_total_objects(object_data)
+    }
+
         
-        # Render the HTML template and pass total_objects to it
-        return render_template('full_reports.html', total_objects=total_objects)
+
+        # Ensure all files are uploaded before proceeding
+        temp_dir = all_files_uploaded(files)
+
+        if not temp_dir:
+            flash('No FITS files uploaded', 'error')
+            return redirect(url_for('project'))
+        try:
+    # Process FITS files
+            csv_content = process_fits_files(temp_dir)
+            analyzer = DebrisAnalyzer(threshed_directory=csv_content, csv_file_path="output.csv")
+            object_data = analyzer.process_images()
+            total_objects = analyzer.get_total_objects(object_data)
+
+        finally:
+        # Delete temporary directory and its contents
+        # shutil.rmtree(temp_dir)
+            ("ay haga")
+
+
+        
+
+
+    # Ensure user is logged in and has an acc_id in session
+
     else:
-        flash('No project data found. Please create a project first.', 'error')
-        return redirect(url_for('project'))
+        return jsonify({'error': 'User not logged in'}), 401  # Unauthorized
+    # Assuming your DebrisAnalyzer setup and object_data retrieval here
 
-
+       
+    # Render the HTML template and pass total_objects to it
+    return render_template('full_reports.html', total_objects=total_objects)
 @app.route('/reports')
 def reports():
     if 'acc_id' in session:
