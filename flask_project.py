@@ -192,23 +192,11 @@ def signout():
 def admindashboard():
     return render_template('admindashboard.html')
 
-@app.route('/allreports')
-def allreports():
-    if 'admin' in session:
-        # Query the database to get all reports
-        reports = db.session.query(
-            Project.project_id,
-            AccountInfo.first_name,
-            AccountInfo.last_name,
-            Project.projectname,
-            AccountInfo.email
-        ).join(AccountInfo, Project.acc_id == AccountInfo.acc_id).all()
-        
-        # Pass the reports to the template
-        return render_template('allreports.html', reports=reports)
-    else:
-        flash('Unauthorized access!', 'error')
-        return redirect(url_for('signin'))
+@app.route('/allprojects')
+def allprojects():
+    projects = db.session.query(Project).join(AccountInfo).all()
+    return render_template('allprojects.html', projects=projects)
+
 
 
 @app.route('/contactus', methods=['GET', 'POST'])
