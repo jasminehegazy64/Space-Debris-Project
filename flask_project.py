@@ -371,6 +371,19 @@ def project():
             source = request.form['source']
             files = request.files.getlist('dataset')  # Use getlist for multiple files
             acc_id = session['acc_id']
+            detection = 'detection' in request.form
+            tracking = 'tracking' in request.form
+            collision = 'collision' in request.form
+
+            # Store project details in session for later use on reports page
+            session['project_details'] = {
+            'projname': projname,
+            'source': source,
+            'detection': detection,
+            'tracking': tracking,
+            'collision': collision
+        }
+        
             
 
             # Ensure all files are uploaded before proceeding
