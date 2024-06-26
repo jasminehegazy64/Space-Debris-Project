@@ -237,8 +237,13 @@ def contactus():
 
 @app.route('/fullreport')
 def fullreport():
-    return render_template('fullreport.html')
+    # Assuming your DebrisAnalyzer setup and object_data retrieval here
+    analyzer = DebrisAnalyzer(threshed_directory="OOP\\2024-001", csv_file_path="output.csv")
+    object_data = analyzer.process_images()
+    total_objects = analyzer.get_total_objects(object_data)
 
+    # Render the HTML template and pass total_objects to it
+    return render_template('full_reports.html', total_objects=total_objects)
 @app.route('/reports')
 def reports():
     if 'acc_id' in session:
