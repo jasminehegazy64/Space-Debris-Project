@@ -1,92 +1,85 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Admin</title>
-	<meta charset="utf-8">
-	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
-
 <body>
+    <!-- Header -->
+    <header id="header">
+        <div class="inner">
+            <a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43"></a>
+            <nav id="nav">
+                <a href="{{ url_for('admin_users') }}">Users</a>
+                <a href="{{ url_for('messages') }}">Messages</a>
+                <a href="{{ url_for('allreports') }}">Reports</a>
+            </nav>
+            <a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+        </div>
+    </header>
 
-	<!-- Header -->
-	<header id="header">
-		<div class="inner">
-			
-			<a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43"></a>
-			<nav id="nav"> <a href="{{ url_for('signin') }}">Sign In</a>
-                <a href="{{ url_for('signup') }}">Sign Up</a>
-                <a href="{{ url_for('admindashboard') }}">Admin Dashboard</a>
-			</nav><a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
-		</div>
-	</header>
+    <!-- Banner -->
+    <section id="banner">
+        <h1>Admin Dashboard</h1>
+    </section>
 
-	<section id="banner">
-		<h1>Welcome to ESPACIO!</h1>
-		<h1>Admin Dashboard
-        </h1>
-	</section>
+    <!-- Main Content -->
+    <section id="main" class="wrapper style1 special">
+        <div class="inner">
+            <header>
+                <h2>Admin Options</h2>
+            </header>
+            <div class="flex flex-4">
+                <div class="box person">
+                    <div class="image round">
+                        <img src="{{ url_for('static', filename='images/users.png') }}" alt="Users" width="168" height="168">
+                    </div>
+                    <h3>Manage Users</h3>
+                    <a href="{{ url_for('admin_users') }}" class="button special">More</a>
+                </div>
+                <div class="box person">
+                    <div class="image round">
+                        <img src="{{ url_for('static', filename='images/messages.png') }}" alt="Messages" width="168" height="168">
+                    </div>
+                    <h3>View Messages</h3>
+                    <a href="{{ url_for('messages') }}" class="button special">More</a>
+                </div>
+                <div class="box person">
+                    <div class="image round">
+                        <img src="{{ url_for('static', filename='images/report.png') }}" alt="Reports" width="168" height="168">
+                    </div>
+                    <h3>View Reports</h3>
+                    <a href="{{ url_for('allreports') }}" class="button special">More</a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-	<section id="main" class="wrapper">
-		<div class="inner">
-		  {% with messages=get_flashed_messages(with_categories=true) %}
-			{% if messages %}
-			  {% for category, message in messages %}
-				<div class="alert alert-{{ category }}">{{ message }}</div>
-			  {% endfor %}
-			{% endif %}
-		  {% endwith %}
-  
-		  <form method="post" action="#">
-			<center>
-			  <div class="6u$ 12u$(xsmall)">
-				<input type="text" name="username" id="username" value="" placeholder="Email" />
-			  </div>
-			  <br />
-			  <div class="6u 12u$(xsmall)">
-				<input type="text" name="password" id="name" value="" placeholder="Password" />
-			  </div>
-  
-			  <br />
-			  <div class="12u$">
-				<ul class="actions">
-				  <li>
-					<a href="{{ url_for('index') }}"><input type="submit" value="Sign In" class="alt" /></a>
-				  </li>
-				  <br /><br />
-				  No Account?
-				  <br />
-				  <li>
-					<a href="{{ url_for('editdeleteusers') }}"><input type="submit" value="Sign Up" class="alt" /></a>
-				  </li>
-				</ul>
-			  </div>
-			</center>
-		  </form>
-		</div>
-	  </section>
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <div class="flex">
+                <ul class="icons">
+                    <li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+                    <li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+                    <li><a href="#" class="icon fa-linkedin"><span class="label">linkedIn</span></a></li>
+                    <li><a href="#" class="icon fa-pinterest-p"><span class="label">Pinterest</span></a></li>
+                    <li><a href="#" class="icon fa-vimeo"><span class="label">Vimeo</span></a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
 
-	<footer id="footer">
-		<div class="inner">
-			<div class="flex">
-				<ul class="icons">
-					<li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
-					<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
-					<li><a href="#" class="icon fa-linkedin"><span class="label">linkedIn</span></a></li>
-					<li><a href="#" class="icon fa-pinterest-p"><span class="label">Pinterest</span></a></li>
-					<li><a href="#" class="icon fa-vimeo"><span class="label">Vimeo</span></a></li>
-				</ul>
-			</div>
-		</div>
-	</footer>
-	<div class="copyright">
-		ESPACIO : Detecting, Tracking, and Collision Prediction of Space Debris
-	</div>
+    <div class="copyright">
+        ESPACIO : Detecting, Tracking, and Collision Prediction of Space Debris
+    </div>
 
-	<!-- Scripts -->
-	<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/util.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/util.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

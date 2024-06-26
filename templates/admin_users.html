@@ -1,0 +1,77 @@
+<html>
+<head>
+    <title>Admin</title>
+    <meta charset="utf-8" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+    
+</head>
+<body class="subpage">
+    <!-- Header -->
+    <header id="header">
+        <div class="inner">
+            <a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43" /></a>
+            <nav id="nav">
+                <a href="{{ url_for('admindashboard') }}">Admin Dashboard</a>
+                <a href="{{ url_for('admin_users') }}">Users</a>
+                <a href="{{ url_for('messages') }}">Messages</a>
+                <a href="{{ url_for('allreports') }}">Reports</a>
+            </nav><a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+        </div>
+    </header>
+
+    <section id="banner">
+        <h1>All Users</h1>
+    </section>
+    <br />
+    <div class="table-wrapper">
+        <div class="container">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>User Name</th>
+                    <th>Email</th>
+                    <th>Reports</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.acc_id }}</td>
+                    <td>{{ user.first_name }} {{ user.last_name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.reports|length }}</td> <!-- Assumes a relationship between users and reports -->
+                    <td><a href="{{ url_for('edit_user', acc_id=user.acc_id) }}">Edit</a></td>
+                    <td><a href="{{ url_for('delete_user', acc_id=user.acc_id) }}" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a></td>
+
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    <br />
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <div class="flex">
+                <ul class="icons">
+                    <li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+                    <li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+                    <li><a href="#" class="icon fa-linkedin"><span class="label">LinkedIn</span></a></li>
+                    <li><a href="#" class="icon fa-pinterest-p"><span class="label">Pinterest</span></a></li>
+                    <li><a href="#" class="icon fa-vimeo"><span class="label">Vimeo</span></a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+    <div class="copyright">ESPACIO : Detecting, Tracking, and Collision Prediction of Space Debris</div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/skel.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/util.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

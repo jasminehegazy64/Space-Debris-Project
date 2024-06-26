@@ -46,6 +46,7 @@ class AccountInfo(db.Model):
     username = db.Column(db.String(10), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     acc_password = db.Column(db.String(250), nullable=False)
+    project_count = db.Column(db.Integer, default=0)
 
 # Define your Project model
 class Project(db.Model):
@@ -75,11 +76,22 @@ app.secret_key = '0'
 @app.route('/')
 def index():
     return render_template('index.html')
+
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
     if request.method == 'POST':
         email = request.form['email'].strip()  # Trim whitespace
         password = request.form['password']
+
+        # Define the specific admin email and password
+        admin_email = "admin@gmail.com"
+        admin_password = "1234"
+
+        if email.lower() == admin_email.lower() and password == admin_password:
+            session['admin'] = True
+            flash('Logged in as admin!', 'success')
+            return redirect(url_for('admindashboard'))
+
         user = AccountInfo.query.filter(func.lower(AccountInfo.email) == func.lower(email)).first()  # Case-insensitive email comparison
         if user and check_password_hash(user.acc_password, password):
             session['acc_id'] = user.acc_id
@@ -118,6 +130,16 @@ def documentation():
 @app.route('/aboutus')
 def aboutus():
     return render_template('aboutus.html')
+
+
+@app.route('/users')
+def admin_users():
+    if 'admin' in session:
+        users = AccountInfo.query.all()  # Fetch all user data from the database
+        return render_template('admin_users.html', users=users)
+    else:
+        flash('Unauthorized access!', 'error')
+        return redirect(url_for('signin'))
 
 @app.route('/account')
 def account():
@@ -176,7 +198,46 @@ def contactus():
     else:
         return render_template('contactus.html')
 
+@app.route('/edit_user/<int:acc_id>', methods=['GET', 'POST'])
+def edit_user(acc_id):
+    if 'admin' not in session:
+        flash('Unauthorized access!', 'error')
+        return redirect(url_for('signin'))
 
+    user = AccountInfo.query.get(acc_id)
+    if not user:
+        flash('User not found', 'error')
+        return redirect(url_for('admin_users'))
+
+    if request.method == 'POST':
+        # Handle editing user details here
+        user.first_name = request.form['first_name']
+        user.last_name = request.form['last_name']
+        user.email = request.form['email']
+        db.session.commit()
+        flash('User details updated successfully', 'success')
+        return redirect(url_for('admin_users'))
+
+    return render_template('edit_user.html', user=user)
+
+@app.route('/delete_user/<int:acc_id>', methods=['GET', 'POST'])
+def delete_user(acc_id):
+    if 'admin' not in session:
+        flash('Unauthorized access!', 'error')
+        return redirect(url_for('signin'))
+
+    user = AccountInfo.query.get(acc_id)
+    if not user:
+        flash('User not found', 'error')
+        return redirect(url_for('admin_users'))
+
+    if request.method == 'POST':
+        db.session.delete(user)
+        db.session.commit()
+        flash('User deleted successfully', 'success')
+        return redirect(url_for('admin_users'))
+
+    return render_template('admin_users.html')
 
 @app.route('/editdeleteusers')
 def editdeleteusers():
@@ -336,7 +397,11 @@ def project():
                 db.session.add(new_project)
                 db.session.commit()
 
-                
+                # Increment the project count for the user
+                user = AccountInfo.query.filter_by(acc_id=acc_id).first()
+                if user:
+                    user.project_count += 1
+                    db.session.commit()
                
                 flash('Project created successfully', 'success')
                 return redirect(url_for('reports'))
