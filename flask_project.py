@@ -192,8 +192,17 @@ def signout():
 def admindashboard():
     return render_template('admindashboard.html')
 
-@app.route('/allprojects')
+@app.route('/allprojects', methods=['GET', 'POST'])
 def allprojects():
+    if request.method == 'POST':
+        project_id = request.form.get('project_id')
+        if project_id:
+            project = Project.query.get(project_id)
+            if project:
+                db.session.delete(project)
+                db.session.commit()
+                return redirect(url_for('allprojects'))
+
     projects = db.session.query(Project).join(AccountInfo).all()
     return render_template('allprojects.html', projects=projects)
 

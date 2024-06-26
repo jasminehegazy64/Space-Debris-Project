@@ -14,7 +14,7 @@
             <nav id="nav">
                 <a href="{{ url_for('admin_users') }}">Users</a>
                 <a href="{{ url_for('messages') }}">Messages</a>
-                <a href="{{ url_for('allreports') }}">Reports</a>
+                <a href="{{ url_for('allprojects') }}">Reports</a>
 				<a href="{{ url_for('account') }}">Account</a>
             </nav>
             <a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
@@ -52,7 +52,7 @@
                         <img src="{{ url_for('static', filename='images/report.png') }}" alt="Reports" width="168" height="168">
                     </div>
                     <h3>View Reports</h3>
-                    <a href="{{ url_for('allreports') }}" class="button special">More</a>
+                    <a href="{{ url_for('allprojects') }}" class="button special">More</a>
                 </div>
             </div>
         </div>
