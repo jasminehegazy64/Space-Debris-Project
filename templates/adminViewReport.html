@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <style>
+        .container {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body class="subpage">
+    <!-- Header -->
+    <header id="header">
+        <div class="inner">
+            <a href="{{ url_for('index') }}" class="logo"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo" width="45" height="43" /></a>
+            <nav id="nav">
+                <a href="{{ url_for('admindashboard') }}">Admin Dashboard</a>
+                <a href="{{ url_for('admin_users') }}">Users</a>
+                <a href="{{ url_for('messages') }}">Messages</a>
+                <a href="{{ url_for('allprojects') }}">Projects</a>
+            </nav>
+            <a href="#navPanel" class="navPanelToggle"><span class="fa fa-bars"></span></a>
+        </div>
+    </header>
+ </div>
+    </header><!-- Banner -->
+    <section id="banner">
+        <h1>Full Report</h1>
+    </section>
+    <section id="main" class="wrapper">
+        <div class="inner">
+
+            <!-- Form -->
+            <form method="post" action="#">
+                <center>
+                    <h3> Classification and Detection</h3>
+                    <div class="row uniform">
+                        <div class="6u 12u$(xsmall)">
+                            <span type="text" name="fname" id="fname" placeholder="fname">
+                                Number of Detected Debris: {{ total_objects }}
+                            </span>
+                        </div>
+                        <div class="6u$ 12u$(xsmall)">
+                            <span type="lname" name="lname" id="lname" value="" placeholder="lname"> Average Size :
+                            </span>
+                        </div>
+                        <div class="6u 12u$(xsmall)">
+                            <span type="email" name="email" id="email" value="" placeholder="email"> Average Velocity :
+                            </span>
+                        </div>
+                        <div class="6u$ 12u$(xsmall)">
+                            <span type="text" name="age" id="age" value="" placeholder="age"> Coordinates : </span>
+                        </div>
+                        <div class="6u$ 12u$(xsmall)">
+                            <span type="text" name="age" id="age" value="" placeholder="age"> Time Interval : </span>
+                        </div>
+                    </div>
+                </center>
+            </form>
+        </div>
+    </section>
+    <section id="main" class="wrapper">
+        <div class="inner">
+            <center>
+                <!-- Form -->
+                <form method="post" action="#">
+                    <h3> Tracking Trajectories</h3>
+                    <div class="flex flex-2">
+                        <center>
+                            <article style="text-align: center;">
+                                <img src="{{ url_for('static', filename='images/gipfy.gif') }}" alt="video">
+                            </article>
+                        </center>
+                    </div>
+                </form>
+            </center>
+        </div>
+    </section>
+    <section id="main" class="wrapper">
+        <div class="inner">
+            <center>
+                <!-- Form -->
+                <form method="post" action="#">
+                    <h3> Collision Prediction</h3>
+                    <div class="row uniform">
+                        <div class="6u 12u$(xsmall)">
+                            <span type="text" name="fname" id="fname" value="" placeholder="fname">Collision Prediction Percentage : 
+                            </span>
+                        </div>
+                        <div class="6u$ 12u$(xsmall)">
+                            <span type="lname" name="lname" id="lname" value="" placeholder="lname"> Coordinates :
+                            </span>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="12u$">
+                        <center>
+                            <ul class="actions">
+                                <li><input type="submit" value="Download PDF"></li>
+                            </ul>
+                        </center>
+                    </div>
+                </form>
+            </center>
+        </div>
+    </section>
+<!-- Footer -->
+<footer id="footer">
+    <div class="inner">
+        <div class="flex">
+            <ul class="icons">
+                <li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+                <li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+                <li><a href="#" class="icon fa-linkedin"><span class="label">linkedIn</span></a></li>
+                <li><a href="#" class="icon fa-pinterest-p"><span class="label">Pinterest</span></a></li>
+                <li><a href="#" class="icon fa-vimeo"><span class="label">Vimeo</span></a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+<div class="copyright">
+    ESPACIO : Detecting, Tracking, and Collision Prediction of Space Debris
+</div>
+
+<!-- Scripts -->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/skel.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+
+</html>

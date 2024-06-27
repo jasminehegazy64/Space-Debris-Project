@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 import base64
 import uuid
 import io
+from io import BytesIO
 import zipfile
 import tempfile
 import time
@@ -141,6 +142,10 @@ def documentation():
 @app.route('/aboutus')
 def aboutus():
     return render_template('aboutus.html')
+
+@app.route('/adminViewReport.html')
+def adminViewReport():
+    return render_template('adminViewReport.html')
 
 
 from flask import request, redirect, url_for
@@ -317,16 +322,14 @@ def reply_message(message_id):
     message = ContactMessage.query.get(message_id)
     
     if message:
-        # Send email to the user (replace with actual email sending code)
-        # Example using Flask-Mail:
-        # msg = Message('Reply from Admin', sender='admin@example.com', recipients=[message.email])
+
+        # msg = Message('Reply from Admin', sender='admin@gmail.com', recipients=[message.email])
         # msg.body = reply_message
         # mail.send(msg)
-        
-        # # Update message in database if needed
-        # message.reply = reply_message
-        # db.session.commit()
-        
+
+        db.session.delete(message)
+        db.session.commit()
+
         return jsonify({'message': f'Reply sent to {message.name} at {message.email}.'})
     else:
         return jsonify({'message': 'Message not found.'}), 404
@@ -379,12 +382,16 @@ def download_video(project_id):
 
 @app.route('/orbit_prediction/<project_id>')
 def orbit_prediction(project_id):
-    # Fetch the project by its ID
+      # Fetch the project by its ID
     project = Project.query.get(project_id)
     if project:
-        # Create a response containing the orbit link
-        response = make_response(redirect(project.orbit))
-        return response  # Redirect to the orbit link
+        # Create a response containing the video data
+        response = make_response(project.orbit)
+        # Set the Content-Disposition header to specify the filename
+        response.headers['Content-Disposition'] = f'attachment; filename=orbitfig.png'
+        # Set the content type
+        response.headers['Content-Type'] = 'imgage/png'
+        return response  # Return the response object
     else:
         flash('Project not found', 'error')
         return redirect(url_for('reports'))
@@ -468,7 +475,13 @@ def project():
         
             # Ensure all files are uploaded before proceeding
             temp_dir = all_files_uploaded(files)
-            orbit_link = main(temp_dir)
+            orbit_fig = generate_3d_plot(temp_dir, 1, "orbitfig.png")
+
+            # Convert the figure to bytes
+            img_bytes = BytesIO()
+            orbit_fig.write_image(img_bytes, format='png')
+            img_bytes.seek(0)
+            img_data = img_bytes.read()
              
 
             if not temp_dir:
@@ -478,8 +491,9 @@ def project():
             try:
                 # Process FITS files
                 csv_content = process_fits_files(temp_dir)
-                # if request.form.get('orbit'):
-                #     orbit_link = main(temp_dir)
+
+                # Generate orbit link if orbit calculation is selected
+                #orbit_link = main(temp_dir) if orbit else None
                     
 
                 
@@ -500,7 +514,7 @@ def project():
                     video_data = None  
               
 
-                new_project = Project(project_id=str(uuid.uuid4()), projectname=projname, source=source, detection=csv_content, tracking=video_data, acc_id=acc_id, orbit=orbit_link, collision=collision)
+                new_project = Project(project_id=str(uuid.uuid4()), projectname=projname, source=source, detection=csv_content, tracking=video_data, acc_id=acc_id, orbit=img_data, collision=collision)
                 db.session.add(new_project)
                 db.session.commit()
 
