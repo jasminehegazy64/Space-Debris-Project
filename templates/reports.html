@@ -60,15 +60,18 @@
                     <th>Project Name</th>
                     <th>Detection</th>
                     <th>Tracking</th>
-                    <th>Full Report</th>
+                    <th>Orbit determination</th>
+                    <th>Collision Risk</th>
+
                 </tr>
                 {% for project in projects %}
                 <tr>
                     <td>{{ project.projectname }}</td>
                     <td><a href="{{ url_for('view_csv', project_id=project.project_id) }}">View CSV</a>
-                        
+
                         <td><a href="{{ url_for('download_video', project_id=project.project_id) }}">Download Tracking Video</a></td>
-                        <td><a href="{{ url_for('fullreport', project_id=project.project_id) }}"><input type="button" value="Full Report"></a></td>
+                        <td><a href="{{ url_for('orbit_prediction', project_id=project.project_id) }}">View Plot</a></td>
+                        <td>{{ project.collision }}</td>
                 </tr>
                 {% endfor %}
             </table>

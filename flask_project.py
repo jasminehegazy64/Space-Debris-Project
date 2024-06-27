@@ -26,6 +26,7 @@ from OOP.Detection.images_Preprocessing.iterative_Threshholding import iterative
 from OOP.Detection.object_labeling import detect_objects
 from OOP.Tracking.Images_to_Vid import images_to_video
 from OOP.Tracking.optical_flow_fernback import OpticalFlowAnalyzer
+from OOP.Orbit_Determination.kalmanorbitpred import *
 
 app = Flask(__name__)
 
@@ -64,6 +65,9 @@ class Project(db.Model):
     detection = db.Column(db.LargeBinary) 
     tracking = db.Column(db.LargeBinary)
     acc_id = db.Column(db.Integer, db.ForeignKey('account_info.acc_id'))
+    orbit = db.Column(db.LargeBinary)  # Adding the orbit column
+    collision = db.Column(db.String(250))  # Adding the collision column
+
 
 # Define your SQLAlchemy model for the contact messages
 class ContactMessage(db.Model):
@@ -373,7 +377,33 @@ def download_video(project_id):
         return redirect(url_for('reports'))
 
 
+@app.route('/orbit_prediction/<project_id>')
+def orbit_prediction(project_id):
+    # Fetch the project by its ID
+    project = Project.query.get(project_id)
+    if project:
+        # Create a response containing the orbit link
+        response = make_response(redirect(project.orbit))
+        return response  # Redirect to the orbit link
+    else:
+        flash('Project not found', 'error')
+        return redirect(url_for('reports'))
 
+# @app.route('/collision_prediction/<project_id>')
+# def collision_prediction(project_id):
+#     # Fetch the project by its ID
+#     project = Project.query.get(project_id)
+#     if project:
+#         # Create a response containing the video data
+#         response = make_response(project.tracking)
+#         # Set the Content-Disposition header to specify the filename
+#         response.headers['Content-Disposition'] = f'attachment; filename=project_video.mp4'
+#         # Set the content type
+#         response.headers['Content-Type'] = 'video/mp4'
+#         return response  # Return the response object
+#     else:
+#         flash('Project not found', 'error')
+#         return redirect(url_for('reports'))
 
 @app.route('/view_csv/<project_id>')
 def view_csv(project_id):
@@ -408,6 +438,11 @@ def all_files_uploaded(files):
     return temp_dir
 
 
+# def kalman(files):
+#     # data = load_fits_files(files)
+#     # observations = process_fits_files(data)
+#     # states, state_cov, future_states = apply_kalman_filter(observations)
+#     return main(files)
 
 @app.route('/project', methods=['GET', 'POST'])
 def project():
@@ -420,6 +455,7 @@ def project():
             detection = 'detection' in request.form
             tracking = 'tracking' in request.form
             collision = 'collision' in request.form
+            orbit = 'orbit' in request.form
 
             # Store project details in session for later use on reports page
             session['project_details'] = {
@@ -430,41 +466,25 @@ def project():
             'collision': collision
         }
         
-            
-
             # Ensure all files are uploaded before proceeding
             temp_dir = all_files_uploaded(files)
+            orbit_link = main(temp_dir)
+             
 
             if not temp_dir:
                 flash('No FITS files uploaded', 'error')
-                return redirect(url_for('project'))
-
-           
+                return redirect(url_for('project'))         
 
             try:
                 # Process FITS files
                 csv_content = process_fits_files(temp_dir)
-                
+                # if request.form.get('orbit'):
+                #     orbit_link = main(temp_dir)
+                    
 
                 
-
-                #  # Check if detection is selected
-                # if request.form.get('detect'):
-                #     for filename in os.listdir('iterat_images'):
-                #         # Load the binary image
-                #         binary_image = cv2.imread(os.path.join('iterat_images', filename), cv2.IMREAD_GRAYSCALE)
-
-                #         # Detect objects in the binary image
-                #         detected_objects, annotated_image = detect_objects(binary_image)
-
-                #         # Save the annotated image to the output folder
-                #         output_path = os.path.join('annotated_images', filename)
-                #         cv2.imwrite(output_path, annotated_image)
-                #         return render_template('detection_output.html', detected_objects=detected_objects,
-                #                                 annotated_image=annotated_image)
-
                 # Check if tracking is selected
-                if request.form.get('track'):
+                if request.form.get('tracking'):
                     
                     images_to_video('iterat_images', 'OG.MP4', 5)
 
@@ -477,10 +497,10 @@ def project():
                         video_data = video_file.read()
                 
                 else:
-                    video_data = None  # Ensure video_data is initialized
+                    video_data = None  
+              
 
-
-                new_project = Project(project_id=str(uuid.uuid4()), projectname=projname, source=source, detection=csv_content, tracking=video_data, acc_id=acc_id)
+                new_project = Project(project_id=str(uuid.uuid4()), projectname=projname, source=source, detection=csv_content, tracking=video_data, acc_id=acc_id, orbit=orbit_link, collision=collision)
                 db.session.add(new_project)
                 db.session.commit()
 
@@ -505,14 +525,6 @@ def project():
 
 
 def process_fits_files(temp_dir):
-    # fits_directory = 'fits_directory'
-    # os.makedirs(temp_dir, exist_ok=True)
-
-    # # Save FITS files in the fits_directory
-    # for file in temp_dir:
-    #     file_path = os.path.join(fits_directory, secure_filename(file.filename))
-    #     file.save(file_path)
-
     # Create directories for images preprocessing
     images_directory = 'images_directory'
     os.makedirs(images_directory, exist_ok=True)
@@ -538,7 +550,6 @@ def process_fits_files(temp_dir):
         # Read the content of the CSV file
         with open(csv_file_path, 'rb') as csv_file:
             csv_content = csv_file.read()
-
 
         return csv_content
     else:
