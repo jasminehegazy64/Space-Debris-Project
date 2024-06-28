@@ -59,9 +59,8 @@
                     <td>{{ project.account.first_name }} {{ project.account.last_name }}</td>
                     <td>{{ project.projectname }}</td>
                     <td>{{ project.account.email }}</td>
-                    <td><input type="button" value="View" /></td>
-                    <td>
-                      <form method="post" action="{{ url_for('allprojects') }}">
+                    <td><a href="{{ url_for('adminViewReport') }}">View</a></td>
+                     <td> <form method="post" action="{{ url_for('allprojects') }}">
                           <input type="hidden" name="project_id" value="{{ project.project_id }}">
                           <input type="submit" value="Delete">
                       </form>
