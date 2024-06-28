@@ -382,16 +382,28 @@ def download_video(project_id):
 
 @app.route('/orbit_prediction/<project_id>')
 def orbit_prediction(project_id):
-      # Fetch the project by its ID
-    project = Project.query.get(project_id)
+    #   # Fetch the project by its ID
+    # project = Project.query.get(project_id)
+    # if project:
+    #     # Create a response containing the video data
+    #     response = make_response(project.orbit)
+    #     # Set the Content-Disposition header to specify the filename
+    #     response.headers['Content-Disposition'] = f'attachment; filename=orbitfig.png'
+    #     # Set the content type
+    #     response.headers['Content-Type'] = 'imgage/png'
+    #     return response  # Return the response object
+    # else:
+    #     flash('Project not found', 'error')
+    #     return redirect(url_for('reports'))
+    project = Project.query.get_or_404(project_id)
     if project:
-        # Create a response containing the video data
-        response = make_response(project.orbit)
-        # Set the Content-Disposition header to specify the filename
-        response.headers['Content-Disposition'] = f'attachment; filename=orbitfig.png'
-        # Set the content type
-        response.headers['Content-Type'] = 'imgage/png'
-        return response  # Return the response object
+        # Decode the binary HTML content
+        html_content = project.orbit.decode('utf-8')
+        # Create a response containing the HTML content
+        response = make_response(html_content)
+        # Set the content type to text/html
+        response.headers['Content-Type'] = 'text/html'
+        return response
     else:
         flash('Project not found', 'error')
         return redirect(url_for('reports'))
@@ -475,13 +487,17 @@ def project():
         
             # Ensure all files are uploaded before proceeding
             temp_dir = all_files_uploaded(files)
-            orbit_fig = generate_3d_plot(temp_dir, 1, "orbitfig.png")
+            html_file_path = main(temp_dir, 1, "plot.html")
+            # img_data= orbit_fig.read()
+             # Read the HTML content from the file
+            with open(html_file_path, 'r', encoding='utf-8') as file:
+                html_content = file.read().encode('utf-8')
 
-            # Convert the figure to bytes
-            img_bytes = BytesIO()
-            orbit_fig.write_image(img_bytes, format='png')
-            img_bytes.seek(0)
-            img_data = img_bytes.read()
+            # # Convert the figure to bytes
+            # img_bytes = BytesIO()
+            # orbit_fig.write_image(img_bytes, format='png')
+            # img_bytes.seek(0)
+            # img_data = img_bytes.read()
              
 
             if not temp_dir:
@@ -514,7 +530,7 @@ def project():
                     video_data = None  
               
 
-                new_project = Project(project_id=str(uuid.uuid4()), projectname=projname, source=source, detection=csv_content, tracking=video_data, acc_id=acc_id, orbit=img_data, collision=collision)
+                new_project = Project(project_id=str(uuid.uuid4()), projectname=projname, source=source, detection=csv_content, tracking=video_data, acc_id=acc_id, orbit=html_content, collision=collision)
                 db.session.add(new_project)
                 db.session.commit()
 
