@@ -60,7 +60,6 @@
                     <th>Project Name</th>
                     <th>Detection</th>
                     <th>Tracking</th>
-                    <th>Orbit determination</th>
                     <th>Collision Risk</th>
 
                 </tr>
@@ -71,7 +70,7 @@
 
                         <td><a href="{{ url_for('download_video', project_id=project.project_id) }}">Download Tracking Video</a></td>
                         <td><a href="{{ url_for('orbit_prediction', project_id=project.project_id) }}">View Plot</a></td>
-                        <td>{{ project.collision }}</td>
+    
                 </tr>
                 {% endfor %}
             </table>

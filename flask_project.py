@@ -28,6 +28,7 @@ from OOP.Detection.object_labeling import detect_objects
 from OOP.Tracking.Images_to_Vid import images_to_video
 from OOP.Tracking.optical_flow_fernback import OpticalFlowAnalyzer
 from OOP.Orbit_Determination.kalmanorbitpred import *
+from Feature_extraction import *
 
 app = Flask(__name__)
 
@@ -67,9 +68,7 @@ class Project(db.Model):
     tracking = db.Column(db.LargeBinary)
     acc_id = db.Column(db.Integer, db.ForeignKey('account_info.acc_id'))
     orbit = db.Column(db.LargeBinary)  # Adding the orbit column
-    collision = db.Column(db.String(250))  # Adding the collision column
-
-
+    
 # Define your SQLAlchemy model for the contact messages
 class ContactMessage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -382,19 +381,6 @@ def download_video(project_id):
 
 @app.route('/orbit_prediction/<project_id>')
 def orbit_prediction(project_id):
-    #   # Fetch the project by its ID
-    # project = Project.query.get(project_id)
-    # if project:
-    #     # Create a response containing the video data
-    #     response = make_response(project.orbit)
-    #     # Set the Content-Disposition header to specify the filename
-    #     response.headers['Content-Disposition'] = f'attachment; filename=orbitfig.png'
-    #     # Set the content type
-    #     response.headers['Content-Type'] = 'imgage/png'
-    #     return response  # Return the response object
-    # else:
-    #     flash('Project not found', 'error')
-    #     return redirect(url_for('reports'))
     project = Project.query.get_or_404(project_id)
     if project:
         # Decode the binary HTML content
@@ -473,7 +459,6 @@ def project():
             acc_id = session['acc_id']
             detection = 'detection' in request.form
             tracking = 'tracking' in request.form
-            collision = 'collision' in request.form
             orbit = 'orbit' in request.form
 
             # Store project details in session for later use on reports page
@@ -482,7 +467,7 @@ def project():
             'source': source,
             'detection': detection,
             'tracking': tracking,
-            'collision': collision
+            'orbit': orbit
         }
         
             # Ensure all files are uploaded before proceeding
@@ -507,6 +492,8 @@ def project():
             try:
                 # Process FITS files
                 csv_content = process_fits_files(temp_dir)
+                
+
 
                 # Generate orbit link if orbit calculation is selected
                 #orbit_link = main(temp_dir) if orbit else None
@@ -530,7 +517,7 @@ def project():
                     video_data = None  
               
 
-                new_project = Project(project_id=str(uuid.uuid4()), projectname=projname, source=source, detection=csv_content, tracking=video_data, acc_id=acc_id, orbit=html_content, collision=collision)
+                new_project = Project(project_id=str(uuid.uuid4()), projectname=projname, source=source, detection=csv_content, tracking=video_data, acc_id=acc_id, orbit=html_content)
                 db.session.add(new_project)
                 db.session.commit()
 
@@ -552,6 +539,39 @@ def project():
             return redirect(url_for('signin'))  # Redirect to login page if user is not logged in
     else:
         return render_template('project.html')
+
+@app.route('/view_project/<project_id>')
+def view_project(project_id):
+    project = Project.query.get(project_id)
+    if project:
+        # Convert detection CSV data to a list
+        if project.detection:
+            csv_content = project.detection.decode('utf-8')
+            detection_list = [row.split(',') for row in csv_content.split('\n') if row]
+        else:
+            detection_list = None
+        
+    
+        if project.orbit:
+            orbit_content = project.orbit.decode('utf-8')
+        else:
+            orbit_content = None
+            # Generate the URL for the video
+        video_url = url_for('serve_video', project_id=project_id)
+
+        return render_template('adminViewReport.html', project=project, detection_list=detection_list, tracking_data=video_url,orbit_data=orbit_content)
+    else:
+        flash('No project found with the given ID', 'error')
+        return redirect(url_for('reports'))
+
+@app.route('/serve_video/<project_id>')
+def serve_video(project_id):
+    project = Project.query.get(project_id)
+    if project and project.tracking:
+        return Response(project.tracking, mimetype='video/mp4')
+    else:
+        flash('Video not found', 'error')
+        return redirect(url_for('view_project', project_id=project_id))
 
 
 def process_fits_files(temp_dir):
